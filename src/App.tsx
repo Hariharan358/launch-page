@@ -281,17 +281,11 @@ function App() {
         {/* Enhanced header with animations */}
         <div className="mb-16 animate-fadeInUp">
           <div className="flex items-center justify-center gap-4 mb-6">
-            <Crown 
-              size={48} 
-              className="text-yellow-400 animate-bounce delay-100" 
-            />
+          
             <h1 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 tracking-tight animate-pulse hover:animate-none transition-all duration-300 hover:scale-105">
               LOGO
             </h1>
-            <Crown 
-              size={48} 
-              className="text-yellow-400 animate-bounce delay-200" 
-            />
+           
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 animate-fadeInUp delay-300">
             LAUNCH EVENT
