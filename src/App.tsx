@@ -17,18 +17,9 @@ interface Particle {
   maxLife: number;
 }
 
-interface MockWebSocket {
-  readyState: number;
-  send: (data: string) => void;
-  close: () => void;
-  onopen: ((event: Event) => void) | null;
-  onmessage: ((event: MessageEvent) => void) | null;
-  onclose: ((event: CloseEvent) => void) | null;
-  onerror: ((event: Event) => void) | null;
-}
 
 function App() {
-  const [ws, setWs] = useState<WebSocket | MockWebSocket | null>(null);
+  const [ws, setWs] = useState<WebSocket | null>(null);
   const [launchState, setLaunchState] = useState<LaunchState>({
     clickCount: 0,
     isLaunched: false,
@@ -42,90 +33,6 @@ function App() {
   const [pulseAnimation, setPulseAnimation] = useState(false);
   const connectionAttemptsRef = useRef(0);
 
-  // Mock WebSocket for production deployment
-  const createMockWebSocket = () => {
-    // Load state from localStorage
-    const savedState = localStorage.getItem('launchState');
-    if (savedState) {
-      try {
-        const parsedState = JSON.parse(savedState);
-        setLaunchState(parsedState);
-      } catch (e) {
-        console.error('Error parsing saved state:', e);
-      }
-    }
-
-    const mockWs: MockWebSocket = {
-      readyState: WebSocket.OPEN,
-      send: (data: string) => {
-        console.log('Mock WebSocket send:', data);
-        // Simulate server response
-        setTimeout(() => {
-          const message = JSON.parse(data);
-          if (message.type === 'launch_click') {
-            // Simulate adding to launch count
-            setLaunchState(prev => {
-              const newCount = Math.min(prev.clickCount + 1, 10);
-              const isLaunched = newCount >= 10;
-              const newState = {
-                ...prev,
-                clickCount: newCount,
-                isLaunched,
-                participants: [...prev.participants, message.userId]
-              };
-              
-              // Save to localStorage
-              localStorage.setItem('launchState', JSON.stringify(newState));
-              
-              // Broadcast to other tabs
-              window.dispatchEvent(new CustomEvent('launchStateUpdate', { detail: newState }));
-              
-              return newState;
-            });
-          } else if (message.type === 'reset') {
-            const newState = {
-              clickCount: 0,
-              isLaunched: false,
-              participants: []
-            };
-            setLaunchState(newState);
-            
-            // Save to localStorage
-            localStorage.setItem('launchState', JSON.stringify(newState));
-            
-            // Broadcast to other tabs
-            window.dispatchEvent(new CustomEvent('launchStateUpdate', { detail: newState }));
-          }
-        }, 100);
-      },
-      close: () => {
-        console.log('Mock WebSocket closed');
-      },
-      onopen: null,
-      onmessage: null,
-      onclose: null,
-      onerror: null
-    };
-    
-    // Listen for updates from other tabs
-    const handleStorageUpdate = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      if (customEvent.detail) {
-        setLaunchState(customEvent.detail);
-      }
-    };
-    
-    window.addEventListener('launchStateUpdate', handleStorageUpdate);
-    
-    // Simulate connection
-    setTimeout(() => {
-      setIsConnected(true);
-      connectionAttemptsRef.current = 0;
-      console.log('Mock WebSocket connected');
-    }, 500);
-    
-    return mockWs;
-  };
 
   // Enhanced particle system
   useEffect(() => {
@@ -166,7 +73,7 @@ function App() {
 
   // Enhanced WebSocket connection with retry logic
   useEffect(() => {
-    let websocket: WebSocket | MockWebSocket | null = null;
+    let websocket: WebSocket | null = null;
     let retryTimeout: NodeJS.Timeout | null = null;
 
     const connectWebSocket = () => {
@@ -178,28 +85,27 @@ function App() {
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsHost = window.location.hostname;
       
-      // For production deployments, we'll use a WebSocket service
+      // For production deployments, use Railway backend
       // For local development, use port 3001
       const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
       
       let wsUrl;
       if (isProduction) {
-        // For production, use localStorage-based simulation
-        // This simulates the WebSocket behavior without requiring a server
-        console.log('Production mode: Using localStorage simulation');
-        websocket = createMockWebSocket();
-        return;
+        // Use Railway WebSocket backend
+        wsUrl = 'wss://launch-page-production.up.railway.app';
+        console.log('Production mode: Connecting to Railway WebSocket backend');
       } else {
         wsUrl = `${wsProtocol}//${wsHost}:3001`;
       }
       
-      console.log('Connecting to WebSocket:', wsUrl);
+      console.log('🔌 Connecting to WebSocket:', wsUrl);
+      console.log('🌐 Environment:', isProduction ? 'Production (Railway)' : 'Local Development');
       websocket = new WebSocket(wsUrl);
       
       websocket.onopen = () => {
         setIsConnected(true);
         connectionAttemptsRef.current = 0;
-        console.log('Connected to server');
+        console.log('✅ Connected to Railway WebSocket server');
       };
       
       websocket.onmessage = (event) => {
@@ -218,19 +124,23 @@ function App() {
       
       websocket.onclose = () => {
         setIsConnected(false);
-        console.log('Disconnected from server');
+        console.log('❌ Disconnected from Railway WebSocket server');
         
         // Retry connection only if we haven't exceeded max attempts
         if (connectionAttemptsRef.current < 5) {
+          console.log(`🔄 Retrying connection (attempt ${connectionAttemptsRef.current + 1}/5)...`);
           retryTimeout = setTimeout(() => {
             connectionAttemptsRef.current += 1;
             connectWebSocket();
           }, 2000);
+        } else {
+          console.log('❌ Max retry attempts reached. Please refresh the page.');
         }
       };
       
       websocket.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error('❌ Railway WebSocket error:', error);
+        setIsConnected(false);
       };
       
       setWs(websocket);
@@ -354,7 +264,7 @@ function App() {
       <div className="absolute top-6 right-6 flex items-center gap-3 bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10 hover-lift animate-fadeInUp delay-100">
         <div className={`w-3 h-3 rounded-full transition-all duration-300 ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400 animate-pulse'}`}></div>
         <span className="text-sm text-white/80 font-medium animate-fadeIn delay-200">
-          {isConnected ? 'Live' : connectionAttemptsRef.current > 0 ? 'Reconnecting...' : 'Connecting...'}
+          {isConnected ? 'Railway Connected' : connectionAttemptsRef.current > 0 ? 'Reconnecting...' : 'Connecting...'}
         </span>
         {isConnected && <Zap size={14} className="text-emerald-400 animate-bounce" />}
       </div>

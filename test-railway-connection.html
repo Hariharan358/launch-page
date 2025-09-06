@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway WebSocket Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .connected { background: #10B981; }
+        .disconnected { background: #EF4444; }
+        .connecting { background: #F59E0B; }
+        button {
+            background: #3B82F6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #2563EB; }
+        button:disabled { background: #6B7280; cursor: not-allowed; }
+        .log {
+            background: #2D2D2D;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Railway WebSocket Connection Test</h1>
+    
+    <div id="status" class="status connecting">Connecting...</div>
+    
+    <div>
+        <button onclick="testConnection()">Test Connection</button>
+        <button onclick="sendTestMessage()" id="sendBtn" disabled>Send Test Message</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+    
+    <div class="log" id="log"></div>
+
+    <script>
+        let ws = null;
+        let isConnected = false;
+
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateStatus(status, message) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${status}`;
+            statusDiv.textContent = message;
+        }
+
+        function testConnection() {
+            log('🔌 Testing Railway WebSocket connection...');
+            updateStatus('connecting', 'Connecting to Railway...');
+            
+            ws = new WebSocket('wss://launch-page-production.up.railway.app');
+            
+            ws.onopen = function() {
+                isConnected = true;
+                updateStatus('connected', '✅ Connected to Railway WebSocket!');
+                document.getElementById('sendBtn').disabled = false;
+                log('✅ Successfully connected to Railway WebSocket server');
+            };
+            
+            ws.onmessage = function(event) {
+                log(`📨 Received: ${event.data}`);
+            };
+            
+            ws.onclose = function(event) {
+                isConnected = false;
+                updateStatus('disconnected', '❌ Disconnected from Railway');
+                document.getElementById('sendBtn').disabled = true;
+                log(`❌ Connection closed: ${event.code} - ${event.reason}`);
+            };
+            
+            ws.onerror = function(error) {
+                isConnected = false;
+                updateStatus('disconnected', '❌ Connection Error');
+                document.getElementById('sendBtn').disabled = true;
+                log(`❌ WebSocket error: ${error}`);
+            };
+        }
+
+        function sendTestMessage() {
+            if (!isConnected) {
+                log('❌ Not connected to WebSocket');
+                return;
+            }
+            
+            const testMessage = {
+                type: 'launch_click',
+                userId: 'test_user_' + Math.random().toString(36).substr(2, 9)
+            };
+            
+            ws.send(JSON.stringify(testMessage));
+            log(`📤 Sent test message: ${JSON.stringify(testMessage)}`);
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            log('🚀 Railway WebSocket Test Page Loaded');
+            testConnection();
+        };
+    </script>
+</body>
+</html>

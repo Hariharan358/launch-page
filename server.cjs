@@ -14,8 +14,9 @@ const wss = new WebSocket.Server({
 
 // Start server on port 3001 for local development
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 WebSocket server running on port ${PORT}`);
+  console.log(`🌐 Accessible at: ws://localhost:${PORT} (local) or wss://launch-page-production.up.railway.app (production)`);
 });
 
 let launchState = {
