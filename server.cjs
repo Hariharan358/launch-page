@@ -59,8 +59,8 @@ wss.on('connection', (ws) => {
           launchState.participants.push(data.userId);
           launchState.clickCount = launchState.participants.length;
           
-          // Check if we've reached 10 clicks
-          if (launchState.clickCount >= 10) {
+          // Check if we've reached 3 clicks
+          if (launchState.clickCount >= 3) {
             launchState.isLaunched = true;
             launchState.launchTime = new Date().toISOString();
           }
@@ -99,6 +99,6 @@ console.log('📊 Initial launch state:', launchState);
 // Periodic status logging
 setInterval(() => {
   if (wss.clients.size > 0) {
-    console.log(`📈 Status: ${wss.clients.size} clients connected, ${launchState.clickCount}/10 participants`);
+    console.log(`📈 Status: ${wss.clients.size} clients connected, ${launchState.clickCount}/3 participants`);
   }
 }, 30000); // Log every 30 seconds if there are active clients
