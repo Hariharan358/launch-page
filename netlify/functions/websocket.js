@@ -1,0 +1,120 @@
+const { Server } = require('ws');
+
+// Store the WebSocket server instance globally
+let wss = null;
+let launchState = {
+  clickCount: 0,
+  isLaunched: false,
+  participants: [],
+  launchTime: null
+};
+
+// Enhanced logging
+function logState(action) {
+  console.log(`[${new Date().toISOString()}] ${action} - Count: ${launchState.clickCount}, Launched: ${launchState.isLaunched}, Participants: ${launchState.participants.length}`);
+}
+
+// Broadcast to all connected clients
+function broadcast(data) {
+  if (!wss) return;
+  const message = JSON.stringify(data);
+  wss.clients.forEach(client => {
+    if (client.readyState === Server.OPEN) {
+      client.send(message);
+    }
+  });
+  console.log(`Broadcasting to ${wss.clients.size} clients`);
+}
+
+// Initialize WebSocket server
+function initializeWebSocketServer() {
+  if (wss) return wss;
+  
+  wss = new Server({ 
+    port: process.env.PORT || 3001,
+    perMessageDeflate: false
+  });
+
+  // Handle client connections
+  wss.on('connection', (ws) => {
+    console.log(`New client connected. Total clients: ${wss.clients.size}`);
+    
+    // Send current state to new client
+    ws.send(JSON.stringify(launchState));
+    
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message);
+        
+        if (data.type === 'launch_click') {
+          // Only accept clicks if not already launched and user hasn't clicked
+          if (!launchState.isLaunched && !launchState.participants.includes(data.userId)) {
+            launchState.participants.push(data.userId);
+            launchState.clickCount = launchState.participants.length;
+            
+            // Check if we've reached 10 clicks
+            if (launchState.clickCount >= 10) {
+              launchState.isLaunched = true;
+              launchState.launchTime = new Date().toISOString();
+            }
+            
+            logState(`Click from ${data.userId.substring(0, 8)}`);
+            broadcast(launchState);
+          }
+        } else if (data.type === 'reset') {
+          // Reset the launch state
+          launchState = {
+            clickCount: 0,
+            isLaunched: false,
+            participants: [],
+            launchTime: null
+          };
+          logState('Launch reset');
+          broadcast(launchState);
+        }
+      } catch (error) {
+        console.error('Error processing message:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      console.log(`Client disconnected. Total clients: ${wss.clients.size - 1}`);
+    });
+    
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
+  });
+
+  console.log('🚀 Enhanced WebSocket server running');
+  console.log('📊 Initial launch state:', launchState);
+
+  // Periodic status logging
+  setInterval(() => {
+    if (wss && wss.clients.size > 0) {
+      console.log(`📈 Status: ${wss.clients.size} clients connected, ${launchState.clickCount}/10 participants`);
+    }
+  }, 30000); // Log every 30 seconds if there are active clients
+
+  return wss;
+}
+
+// Export for Netlify Functions
+exports.handler = async (event, context) => {
+  // Initialize WebSocket server if not already done
+  if (!wss) {
+    initializeWebSocketServer();
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'WebSocket server is running',
+      clients: wss ? wss.clients.size : 0,
+      launchState
+    })
+  };
+};
+
+// Initialize server when module loads
+initializeWebSocketServer();

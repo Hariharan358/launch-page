@@ -1,9 +1,21 @@
 const WebSocket = require('ws');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
+
+// Create HTTP server for WebSocket
+const server = http.createServer();
 
 // Create WebSocket server
 const wss = new WebSocket.Server({ 
-  port: 3001,
+  server,
   perMessageDeflate: false
+});
+
+// Start server on port 3001 for local development
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(`🚀 WebSocket server running on port ${PORT}`);
 });
 
 let launchState = {
