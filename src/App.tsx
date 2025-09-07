@@ -71,9 +71,9 @@ function App() {
             {/* Logo / Title */}
             <div className="flex items-center space-x-3">
               <img src={logo} alt="Logo" className="h-10 w-auto drop-shadow-lg" />
+              </div>
             </div>
           </div>
-        </div>
 
         {/* Mobile Menu - Slides in from top */}
         <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
@@ -90,7 +90,7 @@ function App() {
             >
               User Page
             </button>
-
+            
             <button
               onClick={navigateToBigScreen}
               className={`

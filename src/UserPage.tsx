@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { Rocket, RotateCcw, Star, Trophy } from 'lucide-react';
-import launch from "./logo/launch.jpg";
 
 interface LaunchState {
   clickCount: number;
@@ -267,13 +266,8 @@ function UserPage() {
             <h3 className="text-3xl sm:text-4xl md:text-5xl font-light text-green-600 mb-2">
               LAUNCH SUCCESSFUL
             </h3>
-            <img
-              src={launch}
-              alt="Revealed Product"
-              className="h-24 sm:h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn hover:scale-105"
-            />
             <p className="text-gray-600 font-light text-center max-w-md">
-              The product has been revealed.
+              The product has been revealed on the big screen.
             </p>
           </div>
         )}
@@ -300,13 +294,8 @@ function UserPage() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-900 mb-4">
               LAUNCHED
             </h2>
-            <img
-              src={launch}
-              alt="Revealed Product"
-              className="h-24 sm:h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn hover:scale-105"
-            />
             <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto font-light">
-              The product has been revealed.
+              The product has been revealed on the big screen.
             </p>
             <button
               onClick={() => setShowCelebration(false)}

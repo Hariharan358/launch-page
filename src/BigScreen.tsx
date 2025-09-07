@@ -220,7 +220,7 @@ function BigScreen() {
                   <img
                     src={launch}
                     alt="Revealed Product"
-                    className="h-20 md:h-24 mb-3 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
+                    className="h-32 md:h-40 mb-3 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
                   />
 
                   <div className="text-xs text-gray-500 font-light">
@@ -265,7 +265,7 @@ function BigScreen() {
             <img
               src={launch}
               alt="Revealed Product"
-              className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-auto mb-6 drop-shadow-xl rounded-xl transition-all duration-700 hover:scale-105 border border-gray-100"
+              className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-auto mb-6 drop-shadow-xl rounded-xl transition-all duration-700 hover:scale-105 border border-gray-100"
             />
             <p className="text-gray-600 font-light text-lg max-w-lg text-center">
               The product has been successfully revealed to the world.
@@ -306,7 +306,7 @@ function BigScreen() {
         <img
           src={launch}
           alt="Revealed Product"
-          className="w-64 sm:w-40 md:w-48 lg:w-56 h-auto drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+          className="w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] xl:w-[36rem] h-auto drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
         />
       </div>
 
