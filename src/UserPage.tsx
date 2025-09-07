@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Rocket, RotateCcw, Star, Trophy } from 'lucide-react';
+import casa from "./logo/casa.png";
 
 interface LaunchState {
   clickCount: number;
@@ -159,9 +160,13 @@ function UserPage() {
 
         {/* Logo */}
         <div className="mb-8 sm:mb-12">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light text-gray-900 tracking-tight mb-2 sm:mb-4 drop-shadow-lg">
-            LOGO
-          </h1>
+          <div className="flex justify-center mb-2 sm:mb-4">
+            <img
+              src={casa}
+              alt="Casa Logo"
+              className="h-16 sm:h-20 md:h-24 w-auto drop-shadow-lg"
+            />
+          </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-800 mb-2 sm:mb-4">
             LAUNCH EVENT
           </h2>

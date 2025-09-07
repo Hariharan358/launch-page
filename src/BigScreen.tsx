@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Star } from 'lucide-react';
-import launch from "./logo/launch.jpg";
+import launch from "./logo/launch.png";
 
 interface LaunchState {
   clickCount: number;
@@ -289,7 +289,7 @@ function BigScreen() {
 
       {/* Celebration Overlay — Elegant & Vibrant */}
 {showCelebration && (
-  <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-50">
 
     {/* Celebration Content */}
     <div className="text-center relative z-10 px-6">
