@@ -288,39 +288,39 @@ function BigScreen() {
       </div>
 
       {/* Celebration Overlay — Elegant & Vibrant */}
-      {showCelebration && (
-        <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
+{showCelebration && (
+  <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
 
-          {/* Celebration Content */}
-          <div className="text-center relative z-10 px-6">
-            <div className="text-8xl md:text-9xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-8 animate-fadeIn drop-shadow-lg">
-              LOGO
-            </div>
+    {/* Celebration Content */}
+    <div className="text-center relative z-10 px-6">
+      <div className="text-8xl md:text-9xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-8 animate-fadeIn drop-shadow-lg">
+        LOGO
+      </div>
 
-            <h2 className="text-5xl md:text-6xl font-light text-gray-900 mb-6">
-              LAUNCHED
-            </h2>
+      <h2 className="text-5xl md:text-6xl font-light text-gray-900 mb-6">
+        LAUNCHED
+      </h2>
 
-            {/* 👇 Product image in popup */}
-            <img
-              src={launch}
-              alt="Revealed Product"
-              className="mx-auto w-32 sm:w-40 md:w-48 lg:w-56 h-auto mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
-            />
+      {/* ✅ FIXED: Added `block` to make mx-auto work */}
+      <img
+        src={launch}
+        alt="Revealed Product"
+        className="block mx-auto w-32 sm:w-40 md:w-48 lg:w-56 h-auto mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+      />
 
-            <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
-              The product has been revealed.
-            </p>
+      <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
+        The product has been revealed.
+      </p>
 
-            <button
-              onClick={() => setShowCelebration(false)}
-              className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-all duration-300 font-light hover:scale-105 shadow-lg text-lg"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      <button
+        onClick={() => setShowCelebration(false)}
+        className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-all duration-300 font-light hover:scale-105 shadow-lg text-lg"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
 
       {/* Celebration Particles (Stars) — Optional, fits theme */}
       {particles.map(particle => (
