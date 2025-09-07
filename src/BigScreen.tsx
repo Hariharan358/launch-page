@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Star, Zap } from 'lucide-react';
-import launch from "./logo/launch.jpg"
+import { Star } from 'lucide-react';
+import launch from "./logo/launch.jpg";
 
 interface LaunchState {
   clickCount: number;
@@ -25,7 +25,7 @@ function BigScreen() {
     isLaunched: false,
     participants: []
   });
-  
+
   const [showCelebration, setShowCelebration] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
   const connectionAttemptsRef = useRef(0);
@@ -53,7 +53,7 @@ function BigScreen() {
     createParticles();
 
     const animateParticles = () => {
-      setParticles(prev => 
+      setParticles(prev =>
         prev.map(particle => ({
           ...particle,
           x: particle.x + particle.vx,
@@ -79,34 +79,32 @@ function BigScreen() {
 
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsHost = window.location.hostname;
-      
+
       const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-      
+
       let wsUrl;
       if (isProduction) {
-        // Updated to use Render URL
         wsUrl = 'wss://launch-page-k7rh.onrender.com';
         console.log('Big Screen: Connecting to Render WebSocket backend');
       } else {
         wsUrl = `${wsProtocol}//${wsHost}:3001`;
       }
-      
+
       console.log('🔌 Big Screen connecting to:', wsUrl);
       websocket = new WebSocket(wsUrl);
-      
+
       websocket.onopen = () => {
-        setIsConnected(true);
         connectionAttemptsRef.current = 0;
         console.log('✅ Big Screen connected to Render WebSocket server');
       };
-      
+
       websocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setLaunchState(data);
-        
+
         if (data.isLaunched && !showCelebration) {
           setShowCelebration(true);
-          
+
           // Trigger screen shake effect
           setTimeout(() => {
             document.body.style.animation = 'shake 0.8s ease-in-out';
@@ -116,11 +114,10 @@ function BigScreen() {
           }, 200);
         }
       };
-      
+
       websocket.onclose = () => {
-        setIsConnected(false);
         console.log('❌ Big Screen disconnected from Render WebSocket server');
-        
+
         if (connectionAttemptsRef.current < 5) {
           console.log(`🔄 Big Screen retrying connection (attempt ${connectionAttemptsRef.current + 1}/5)...`);
           retryTimeout = setTimeout(() => {
@@ -129,12 +126,11 @@ function BigScreen() {
           }, 2000);
         }
       };
-      
+
       websocket.onerror = (error) => {
         console.error('❌ Big Screen WebSocket error:', error);
-        setIsConnected(false);
       };
-      
+
       setWs(websocket);
     };
 
@@ -204,32 +200,45 @@ function BigScreen() {
             </svg>
 
             {/* Center Status Text */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                {!launchState.isLaunched ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              {!launchState.isLaunched ? (
+                <>
                   <div className={`text-3xl font-light transition-all duration-500 ${isNearLaunch ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-700'}`}>
                     {isNearLaunch ? "READY TO REVEAL" : "WAITING"}
                   </div>
-                ) : (
-                  <div className="text-green-600 text-3xl font-light animate-pulse">
+                  <div className="text-sm text-gray-500 mt-2 font-light">
+                    {launchState.clickCount} of 3 participants
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-green-600 text-3xl font-light animate-pulse mb-4">
                     LAUNCHED
                   </div>
-                )}
-                <div className="text-sm text-gray-500 mt-2 font-light">
-                  {launchState.clickCount} of 3 participants
-                </div>
-              </div>
+
+                  {/* 👇 Revealed Product Image inside circle */}
+                  <img
+                    src={launch}
+                    alt="Revealed Product"
+                    className="h-20 md:h-24 mb-3 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
+                  />
+
+                  <div className="text-xs text-gray-500 font-light">
+                    Product revealed!
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
           {/* Progress Bar */}
           <div className="w-full max-w-xl mx-auto bg-gray-100 rounded-full h-3 overflow-hidden relative">
-            <div 
+            <div
               className={`h-full rounded-full transition-all duration-1000 ease-out ${
-                launchState.isLaunched 
-                  ? 'bg-green-500' 
-                  : isNearLaunch 
-                    ? 'bg-orange-500' 
+                launchState.isLaunched
+                  ? 'bg-green-500'
+                  : isNearLaunch
+                    ? 'bg-orange-500'
                     : 'bg-gray-400'
               }`}
               style={{ width: `${progressPercentage}%` }}
@@ -250,7 +259,21 @@ function BigScreen() {
           </div>
         </div>
 
-        {/* Waiting Message */}
+        {/* 👇 Large Product Reveal Below Progress Circle */}
+        {launchState.isLaunched && (
+          <div className="mb-12 flex flex-col items-center animate-fadeIn">
+            <img
+              src={launch}
+              alt="Revealed Product"
+              className="h-48 md:h-64 mb-6 drop-shadow-xl rounded-xl transition-all duration-700 hover:scale-105 border border-gray-100"
+            />
+            <p className="text-gray-600 font-light text-lg max-w-lg text-center">
+              The product has been successfully revealed to the world.
+            </p>
+          </div>
+        )}
+
+        {/* Waiting Message — only shown before launch */}
         {!launchState.isLaunched && (
           <div className="mt-12">
             <div className="text-2xl font-light text-gray-700 mb-2">
@@ -272,19 +295,22 @@ function BigScreen() {
             <div className="text-8xl md:text-9xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-8 animate-fadeIn drop-shadow-lg">
               LOGO
             </div>
-            
+
             <h2 className="text-5xl md:text-6xl font-light text-gray-900 mb-6">
               LAUNCHED
             </h2>
+
+            {/* 👇 Product image in popup */}
             <img
-              src={launch} // 👈 Make sure you imported this: import logo from './logo/casa.png';
+              src={launch}
               alt="Revealed Product"
               className="h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
             />
+
             <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
               The product has been revealed.
             </p>
-            
+
             <button
               onClick={() => setShowCelebration(false)}
               className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-all duration-300 font-light hover:scale-105 shadow-lg text-lg"
@@ -306,15 +332,15 @@ function BigScreen() {
             opacity: particle.life / particle.maxLife
           }}
         >
-          <Star 
-            size={14} 
-            className="text-orange-500" 
+          <Star
+            size={14}
+            className="text-orange-500"
             fill="currentColor"
           />
         </div>
       ))}
 
-      {/* Custom Animations (add to global CSS or styled-components) */}
+      {/* Custom Animations */}
       <style jsx>{`
         @keyframes confetti {
           0% { transform: translateY(0) rotate(0); opacity: 1; }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Rocket, RotateCcw, Zap, Star, Trophy } from 'lucide-react';
-import launch from "./logo/launch.jpg"
+import launch from "./logo/launch.jpg";
 
 interface LaunchState {
   clickCount: number;
@@ -87,7 +87,6 @@ function UserPage() {
       
       let wsUrl;
       if (isProduction) {
-        // Updated to use Render URL
         wsUrl = 'wss://launch-page-k7rh.onrender.com';
         console.log('Production mode: Connecting to Render WebSocket backend');
       } else {
@@ -317,16 +316,16 @@ function UserPage() {
             )}
           </div>
         ) : (
-          <div className="mb-8">
+          <div className="mb-8 flex flex-col items-center">
             <h3 className="text-3xl font-light text-green-600 mb-2">
               LAUNCH SUCCESSFUL
             </h3>
             <img
-              src={launch} // 👈 Make sure you imported this: import logo from './logo/casa.png';
+              src={launch}
               alt="Revealed Product"
-              className="h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+              className="h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn hover:scale-105"
             />
-            <p className="text-gray-600 font-light">
+            <p className="text-gray-600 font-light text-center max-w-md">
               The product has been revealed.
             </p>
           </div>
@@ -356,6 +355,14 @@ function UserPage() {
             <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-4">
               LAUNCHED
             </h2>
+
+            {/* 👇 Product image added to popup */}
+            <img
+              src={launch}
+              alt="Revealed Product"
+              className="h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn hover:scale-105"
+            />
+
             <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto font-light">
               The product has been revealed.
             </p>
