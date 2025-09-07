@@ -38,7 +38,7 @@ function Home() {
 
         {/* CTA Button — Vibrant Orange Popper Style */}
         <Link
-          to="/"
+          to="/launch"
           className="px-8 py-4 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 hover:from-orange-600 hover:to-orange-800 text-white font-light text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95"
         >
           Go to Launch Page
