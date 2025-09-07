@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import UserPage from './UserPage';
 import BigScreen from './BigScreen';
-import casa from "./logo/casa.png"
+import casa from "./logo/casa.png";
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'user' | 'bigscreen'>('user');
+  const [transitionKey, setTransitionKey] = useState(0);
 
   // Simple URL-based routing
   useEffect(() => {
@@ -25,6 +26,7 @@ function App() {
       } else {
         setCurrentPage('user');
       }
+      setTransitionKey(prev => prev + 1); // trigger animation
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -34,32 +36,29 @@ function App() {
   // Navigation functions
   const navigateToUserPage = () => {
     setCurrentPage('user');
+    setTransitionKey(prev => prev + 1);
     window.history.pushState({}, '', '/');
   };
 
   const navigateToBigScreen = () => {
     setCurrentPage('bigscreen');
+    setTransitionKey(prev => prev + 1);
     window.history.pushState({}, '', '/bigscreen');
   };
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
-
       {/* Navigation Bar — Clean & Elegant */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            
             {/* Logo / Title */}
             <div className="flex items-center space-x-3">
-              {/* Logo Image */}
               <img
-                src={casa} // 👈 Replace with your logo path
+                src={casa}
                 alt="LOGO Launch"
                 className="h-12 w-auto object-contain"
               />
-              
-              {/* Optional: Keep text beside logo */}
               <h1 className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent hidden sm:block">
                 LOGO Launch
               </h1>
@@ -99,19 +98,30 @@ function App() {
         </div>
       </nav>
 
-      {/* Page Content — with top padding for fixed navbar */}
+      {/* Page Content — with transition */}
       <div className="pt-20">
-        {currentPage === 'user' ? <UserPage /> : <BigScreen />}
+        <div
+          key={transitionKey} // ensures re-render triggers animation
+          className="animate-fadeSlide"
+        >
+          {currentPage === 'user' ? <UserPage /> : <BigScreen />}
+        </div>
       </div>
 
-      {/* Optional: Global animations (if not defined elsewhere) */}
-      <style tsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+      {/* Animations */}
+      <style jsx>{`
+        @keyframes fadeSlide {
+          from {
+            opacity: 0;
+            transform: translateY(15px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        .animate-fadeIn {
-          animation: fadeIn 0.4s ease-out forwards;
+        .animate-fadeSlide {
+          animation: fadeSlide 0.5s ease-out forwards;
         }
       `}</style>
     </div>

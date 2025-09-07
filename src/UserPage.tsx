@@ -205,13 +205,27 @@ function UserPage() {
       </div>
 
       {/* Connection Status — Clean & Professional */}
-      <div className="absolute top-6 right-6 flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200 shadow-md transition-all duration-300">
-        <div className={`w-3 h-3 rounded-full transition-all duration-300 ${isConnected ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'}`}></div>
+      <div
+        className="
+          absolute right-6 
+          top-0 sm:top-5   // ✅ closer to top on small screens
+          flex items-center gap-3 
+          bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 
+          border border-gray-200 shadow-md 
+          transition-all duration-300
+        "
+      >
+        <div
+          className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            isConnected ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'
+          }`}
+        ></div>
         <span className="text-sm font-medium text-gray-700">
           {isConnected ? 'Connected' : 'Connecting...'}
         </span>
         {isConnected && <Zap size={14} className="text-orange-500 animate-bounce" />}
       </div>
+
 
       {/* Participant Counter — Minimal & Elegant */}
       <div className="absolute top-6 left-6 flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200 shadow-md">
@@ -224,7 +238,7 @@ function UserPage() {
 
         {/* Logo Placeholder */}
         <div className="mb-12">
-          <h1 className="text-6xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-4">
+          <h1 className="text-6xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
             LOGO
           </h1>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
