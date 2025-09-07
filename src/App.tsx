@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import UserPage from './UserPage';
 import BigScreen from './BigScreen';
-import casa from "./logo/casa.png";
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'user' | 'bigscreen'>('user');
@@ -54,11 +53,6 @@ function App() {
           <div className="flex justify-between items-center h-16">
             {/* Logo / Title */}
             <div className="flex items-center space-x-3">
-              <img
-                src={casa}
-                alt="LOGO Launch"
-                className="h-12 w-auto object-contain"
-              />
               <h1 className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent hidden sm:block">
                 LOGO Launch
               </h1>
