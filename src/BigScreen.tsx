@@ -305,7 +305,7 @@ function BigScreen() {
             <img
               src={launch}
               alt="Revealed Product"
-              className="w-32 sm:w-40 md:w-48 lg:w-56 h-auto mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+              className="mx-auto w-32 sm:w-40 md:w-48 lg:w-56 h-auto mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
             />
 
             <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
