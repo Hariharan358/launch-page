@@ -302,11 +302,13 @@ function BigScreen() {
       </h2>
 
       {/* ✅ FIXED: Added `block` to make mx-auto work */}
-      <img
-        src={launch}
-        alt="Revealed Product"
-        className="block mx-auto w-32 sm:w-40 md:w-48 lg:w-56 h-auto mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
-      />
+      <div className="flex justify-center mb-6">
+  <img
+    src={launch}
+    alt="Revealed Product"
+    className="w-32 sm:w-40 md:w-48 lg:w-56 h-auto drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+  />
+</div>
 
       <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
         The product has been revealed.
