@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Rocket, RotateCcw, Zap, Star, Trophy } from 'lucide-react';
+import launch from "./logo/launch.jpg"
 
 interface LaunchState {
   clickCount: number;
@@ -320,6 +321,11 @@ function UserPage() {
             <h3 className="text-3xl font-light text-green-600 mb-2">
               LAUNCH SUCCESSFUL
             </h3>
+            <img
+              src={launch} // 👈 Make sure you imported this: import logo from './logo/casa.png';
+              alt="Revealed Product"
+              className="h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+            />
             <p className="text-gray-600 font-light">
               The product has been revealed.
             </p>
