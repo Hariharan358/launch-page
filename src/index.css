@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom animations */
+/* ========== CUSTOM ANIMATIONS — WHITE + ORANGE THEME ========== */
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -61,12 +62,15 @@
   }
 }
 
+/* 🔥 ORANGE GLOW — replaces blue/purple glow */
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 15px rgba(247, 148, 26, 0.4); /* Orange-400 */
   }
   50% {
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.6);
+    box-shadow: 
+      0 0 25px rgba(247, 148, 26, 0.7),
+      0 0 40px rgba(211, 107, 0, 0.5); /* Dark Orange-600 */
   }
 }
 
@@ -115,6 +119,7 @@
   }
 }
 
+/* 🎊 ORANGE CONFETTI — replaces rainbow confetti */
 @keyframes confetti {
   0% {
     transform: translateY(-100vh) rotate(0deg);
@@ -138,7 +143,8 @@
   }
 }
 
-/* Animation classes */
+/* ========== ANIMATION CLASSES ========== */
+
 .animate-fadeInUp {
   animation: fadeInUp 0.6s ease-out forwards;
 }
@@ -179,20 +185,22 @@
   animation: confetti 3s linear forwards;
 }
 
-/* Custom hover effects */
+/* ========== HOVER & INTERACTION EFFECTS ========== */
+
 .hover-lift {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .hover-lift:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Enhanced button effects */
+/* 🧡 ORANGE BUTTON GLOW — replaces blue/purple */
 .btn-glow {
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .btn-glow::before {
@@ -202,10 +210,68 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s;
 }
 
 .btn-glow:hover::before {
   left: 100%;
+}
+
+/* ========== UTILITY CLASSES ========== */
+
+/* Orange pulse for near-launch states */
+.animate-orangePulse {
+  animation: orangePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes orangePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(247, 148, 26, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(247, 148, 26, 0);
+  }
+}
+
+/* Subtle background pulse for containers */
+.animate-bgPulse {
+  animation: bgPulse 4s ease-in-out infinite;
+}
+
+@keyframes bgPulse {
+  0%, 100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(247, 148, 26, 0.05);
+  }
+}
+
+/* ========== RESPONSIVE ENHANCEMENTS ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus ring for accessibility (orange theme) */
+:focus-visible {
+  outline: 3px solid #F7941A;
+  outline-offset: 2px;
 }

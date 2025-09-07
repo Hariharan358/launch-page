@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import UserPage from './UserPage';
 import BigScreen from './BigScreen';
+import casa from "./logo/casa.png"
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'user' | 'bigscreen'>('user');
@@ -41,34 +42,55 @@ function App() {
     window.history.pushState({}, '', '/bigscreen');
   };
 
-
   return (
-    <div className="min-h-screen">
-      {/* Navigation bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm border-b border-white/10">
+    <div className="min-h-screen bg-white text-gray-800">
+
+      {/* Navigation Bar — Clean & Elegant */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold text-white">LOGO Launch</h1>
+            
+            {/* Logo / Title */}
+            <div className="flex items-center space-x-3">
+              {/* Logo Image */}
+              <img
+                src={casa} // 👈 Replace with your logo path
+                alt="LOGO Launch"
+                className="h-12 w-auto object-contain"
+              />
+              
+              {/* Optional: Keep text beside logo */}
+              <h1 className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent hidden sm:block">
+                LOGO Launch
+              </h1>
             </div>
-            <div className="flex space-x-4">
+
+            {/* Navigation Buttons */}
+            <div className="flex space-x-3">
               <button
                 onClick={navigateToUserPage}
-                className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-                  currentPage === 'user'
-                    ? 'bg-blue-500 text-white shadow-lg'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
-                }`}
+                className={`
+                  px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300
+                  ${currentPage === 'user'
+                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+                  }
+                  focus:outline-none focus:ring-2 focus:ring-orange-300
+                `}
               >
                 User Page
               </button>
+
               <button
                 onClick={navigateToBigScreen}
-                className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-                  currentPage === 'bigscreen'
-                    ? 'bg-purple-500 text-white shadow-lg'
-                    : 'text-white/70 hover:text-white hover:bg-white/10'
-                }`}
+                className={`
+                  px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-300
+                  ${currentPage === 'bigscreen'
+                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
+                  }
+                  focus:outline-none focus:ring-2 focus:ring-orange-300
+                `}
               >
                 Big Screen
               </button>
@@ -77,10 +99,21 @@ function App() {
         </div>
       </nav>
 
-      {/* Page content */}
-      <div className="pt-16">
+      {/* Page Content — with top padding for fixed navbar */}
+      <div className="pt-20">
         {currentPage === 'user' ? <UserPage /> : <BigScreen />}
       </div>
+
+      {/* Optional: Global animations (if not defined elsewhere) */}
+      <style tsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 }

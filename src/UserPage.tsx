@@ -69,27 +69,23 @@ function UserPage() {
     return () => clearInterval(interval);
   }, [showCelebration]);
 
-  // Enhanced WebSocket connection with retry logic
+  // WebSocket connection with retry logic
   useEffect(() => {
     let websocket: WebSocket | null = null;
     let retryTimeout: NodeJS.Timeout | null = null;
 
     const connectWebSocket = () => {
       if (websocket && websocket.readyState === WebSocket.OPEN) {
-        return; // Already connected
+        return;
       }
 
-      // Detect protocol based on current page protocol
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsHost = window.location.hostname;
       
-      // For production deployments, use Railway backend
-      // For local development, use port 3001
       const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
       
       let wsUrl;
       if (isProduction) {
-        // Use Railway WebSocket backend
         wsUrl = 'wss://launch-page-production.up.railway.app';
         console.log('Production mode: Connecting to Railway WebSocket backend');
       } else {
@@ -97,7 +93,6 @@ function UserPage() {
       }
       
       console.log('🔌 Connecting to WebSocket:', wsUrl);
-      console.log('🌐 Environment:', isProduction ? 'Production (Railway)' : 'Local Development');
       websocket = new WebSocket(wsUrl);
       
       websocket.onopen = () => {
@@ -114,16 +109,13 @@ function UserPage() {
           setShowCelebration(true);
           setPulseAnimation(true);
           
-          // Trigger celebration effects
           setTimeout(() => {
-            // Add screen shake effect
             document.body.style.animation = 'shake 0.5s ease-in-out';
             setTimeout(() => {
               document.body.style.animation = '';
             }, 500);
           }, 100);
           
-          // Auto-hide celebration after 8 seconds
           setTimeout(() => {
             setShowCelebration(false);
             setPulseAnimation(false);
@@ -135,15 +127,12 @@ function UserPage() {
         setIsConnected(false);
         console.log('❌ Disconnected from Railway WebSocket server');
         
-        // Retry connection only if we haven't exceeded max attempts
         if (connectionAttemptsRef.current < 5) {
           console.log(`🔄 Retrying connection (attempt ${connectionAttemptsRef.current + 1}/5)...`);
           retryTimeout = setTimeout(() => {
             connectionAttemptsRef.current += 1;
             connectWebSocket();
           }, 2000);
-        } else {
-          console.log('❌ Max retry attempts reached. Please refresh the page.');
         }
       };
       
@@ -165,7 +154,7 @@ function UserPage() {
         websocket.close();
       }
     };
-  }, []); // Empty dependency array - only run once on mount
+  }, []);
 
   const handleLaunch = () => {
     if (!ws || hasClicked || launchState.isLaunched) return;
@@ -196,61 +185,237 @@ function UserPage() {
   const isNearLaunch = launchState.clickCount >= 2;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Enhanced animated background */}
-      <div className="absolute inset-0">
-        {/* Animated gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-500"></div>
-        
-        {/* Additional floating orbs with different animations */}
-        <div className="absolute top-1/6 right-1/3 w-32 h-32 bg-cyan-400/15 rounded-full blur-2xl animate-bounce delay-700"></div>
-        <div className="absolute bottom-1/6 left-1/6 w-48 h-48 bg-emerald-400/15 rounded-full blur-2xl animate-ping delay-300"></div>
-        
-        {/* Floating stars with enhanced animations */}
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white/40 rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${1.5 + Math.random() * 2}s`
-            }}
-          />
-        ))}
-        
-        {/* Shooting stars */}
-        {[...Array(5)].map((_, i) => (
-          <div
-            key={`shooting-${i}`}
-            className="absolute w-2 h-0.5 bg-white/60 rounded-full animate-ping"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: '2s',
-              transform: 'rotate(45deg)'
-            }}
-          />
-        ))}
-        
-        {/* Animated grid pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="w-full h-full" style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px',
-            animation: 'gridMove 20s linear infinite'
-          }}></div>
+    <div className="min-h-screen bg-white text-gray-800 flex items-center justify-center p-6 relative overflow-hidden">
+
+      {/* Elegant Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Floating orange orbs */}
+        <div className="absolute top-20 left-20 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-70"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-orange-50 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-gray-100 rounded-full blur-2xl opacity-40"></div>
+
+        {/* Subtle grid */}
+        <div className="absolute inset-0 opacity-5" style={{
+          backgroundImage: `
+            linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px'
+        }}></div>
+      </div>
+
+      {/* Connection Status — Clean & Professional */}
+      <div className="absolute top-6 right-6 flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200 shadow-md transition-all duration-300">
+        <div className={`w-3 h-3 rounded-full transition-all duration-300 ${isConnected ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'}`}></div>
+        <span className="text-sm font-medium text-gray-700">
+          {isConnected ? 'Connected' : 'Connecting...'}
+        </span>
+        {isConnected && <Zap size={14} className="text-orange-500 animate-bounce" />}
+      </div>
+
+      {/* Participant Counter — Minimal & Elegant */}
+      <div className="absolute top-6 left-6 flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200 shadow-md">
+        <span className="text-xl font-bold text-gray-800">{launchState.clickCount}</span>
+        <span className="text-gray-500 text-sm">/ 3</span>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-3xl w-full text-center relative z-10">
+
+        {/* Logo Placeholder */}
+        <div className="mb-12">
+          <h1 className="text-6xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-4">
+            LOGO
+          </h1>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            LAUNCH EVENT
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Join the exclusive launch! We need exactly <span className="font-semibold text-orange-600">3 participants</span> to simultaneously reveal our revolutionary new logo.
+          </p>
+        </div>
+
+        {/* Progress Circle — Orange Theme */}
+        <div className="mb-12">
+          <div className={`relative w-64 h-64 mx-auto mb-8 transition-all duration-500 ${pulseAnimation ? 'scale-105' : 'scale-100'} hover:scale-105`}>
+
+            {/* Outer subtle ring */}
+            <div className="absolute inset-0 rounded-full border-2 border-gray-200"></div>
+
+            {/* Progress Ring */}
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                stroke="#f3f4f6"
+                strokeWidth="3"
+                fill="none"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                stroke={launchState.isLaunched ? "#10B981" : isNearLaunch ? "#F7941A" : "#D36B00"}
+                strokeWidth="5"
+                fill="none"
+                strokeDasharray={`${2 * Math.PI * 42}`}
+                strokeDashoffset={`${2 * Math.PI * 42 * (1 - progressPercentage / 100)}`}
+                className="transition-all duration-1000 ease-out"
+                strokeLinecap="round"
+              />
+            </svg>
+
+            {/* Center Status */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className={`text-4xl font-bold transition-all duration-500 ${pulseAnimation ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-800'}`}>
+                  {launchState.clickCount}
+                </div>
+                <div className="text-sm text-gray-500 mt-1">/ 3</div>
+                {isNearLaunch && !launchState.isLaunched && (
+                  <div className="text-orange-600 text-xs font-medium mt-2 animate-pulse">
+                    Almost there!
+                  </div>
+                )}
+                {launchState.isLaunched && (
+                  <div className="text-green-600 text-xs font-medium mt-2 animate-pulse">
+                    🎉 LAUNCHED!
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full max-w-lg mx-auto bg-gray-100 rounded-full h-2.5 overflow-hidden relative">
+            <div 
+              className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                launchState.isLaunched 
+                  ? 'bg-green-500' 
+                  : isNearLaunch 
+                    ? 'bg-orange-500' 
+                    : 'bg-gray-400'
+              }`}
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
+
+          <div className="mt-4 text-gray-600 text-sm">
+            {3 - launchState.clickCount > 0 
+              ? `${3 - launchState.clickCount} more needed to unlock the reveal`
+              : "🎉 Launch sequence activated!"
+            }
+          </div>
+        </div>
+
+        {/* Launch Button or Status */}
+        {!launchState.isLaunched ? (
+          <div className="mb-8">
+            <button
+              onClick={handleLaunch}
+              disabled={hasClicked || !isConnected}
+              className={`
+                relative px-10 py-5 rounded-xl font-bold text-lg transition-all duration-300 transform
+                ${hasClicked 
+                  ? 'bg-green-600 text-white cursor-default scale-100 shadow-lg' 
+                  : isConnected
+                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:scale-105 hover:shadow-lg hover:shadow-orange-300 active:scale-95' 
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }
+              `}
+            >
+              <div className="flex items-center gap-3 justify-center">
+                {hasClicked ? (
+                  <>
+                    <Trophy size={20} />
+                    <span>LAUNCHED!</span>
+                  </>
+                ) : (
+                  <>
+                    <Rocket size={20} />
+                    <span>LAUNCH NOW</span>
+                    <Sparkles size={16} />
+                  </>
+                )}
+              </div>
+            </button>
+
+            {!isConnected && (
+              <p className="text-orange-600 text-sm mt-3 animate-pulse">
+                Connecting to server...
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="mb-8">
+            <div className="text-5xl mb-4">🎉</div>
+            <h3 className="text-3xl font-bold text-green-600 mb-2">
+              LAUNCH SUCCESSFUL!
+            </h3>
+            <p className="text-gray-600">
+              The logo has been revealed! Check the big screen for the full experience.
+            </p>
+          </div>
+        )}
+
+        {/* Reset Button */}
+        <div>
+          <button
+            onClick={handleReset}
+            className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-300 hover:scale-105 border border-gray-200"
+          >
+            <RotateCcw size={16} />
+            <span>Reset Launch</span>
+          </button>
         </div>
       </div>
 
-      {/* Celebration particles */}
+      {/* Celebration Overlay — Elegant & Vibrant */}
+      {showCelebration && (
+        <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
+
+          <div className="text-center relative z-10 px-6">
+            <div className="text-7xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-6 animate-fadeIn">
+              LOGO
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              🎉 LAUNCHED! 🎉
+            </h2>
+            <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
+              The logo has been revealed to the world!
+            </p>
+            
+            <button
+              onClick={() => setShowCelebration(false)}
+              className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-all duration-300 font-medium hover:scale-105 shadow-md"
+            >
+              Close
+            </button>
+          </div>
+
+          {/* Orange Confetti */}
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(60)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-3 h-3 animate-confetti"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  backgroundColor: ['#F7941A', '#D36B00', '#FFB74D', '#F57C00'][Math.floor(Math.random() * 4)],
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${3 + Math.random() * 2}s`,
+                  borderRadius: '50%'
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Celebration Particles (Stars) — Optional, fits theme */}
       {particles.map(particle => (
         <div
           key={particle.id}
@@ -262,253 +427,37 @@ function UserPage() {
           }}
         >
           <Star 
-            size={8} 
-            className="text-yellow-400 animate-spin" 
+            size={10} 
+            className="text-orange-500" 
             fill="currentColor"
           />
         </div>
       ))}
 
-      {/* Enhanced connection status */}
-      <div className="absolute top-6 right-6 flex items-center gap-3 bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10 hover-lift animate-fadeInUp delay-100">
-        <div className={`w-3 h-3 rounded-full transition-all duration-300 ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400 animate-pulse'}`}></div>
-        <span className="text-sm text-white/80 font-medium animate-fadeIn delay-200">
-          {isConnected ? 'Railway Connected' : connectionAttemptsRef.current > 0 ? 'Reconnecting...' : 'Connecting...'}
-        </span>
-        {isConnected && <Zap size={14} className="text-emerald-400 animate-bounce" />}
-      </div>
-
-      {/* Participant counter badge */}
-      <div className="absolute top-6 left-6 flex items-center gap-2 bg-black/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10 hover-lift animate-fadeInUp delay-200">
-        <span className="text-white font-bold animate-countUp">{launchState.clickCount}</span>
-        <span className="text-white/60 text-sm animate-fadeIn delay-300">/ 3</span>
-      </div>
-
-      {/* Main content */}
-      <div className="max-w-3xl w-full text-center relative z-10">
-        {/* Enhanced header with animations */}
-        <div className="mb-16 animate-fadeInUp">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <h1 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 tracking-tight animate-pulse hover:animate-none transition-all duration-300 hover:scale-105">
-              LOGO
-            </h1>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 animate-fadeInUp delay-300">
-            LAUNCH EVENT
-          </h2>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed animate-fadeInUp delay-500">
-            Join the exclusive launch! We need exactly <span className="font-bold text-yellow-400 animate-pulse">3 participants</span> to simultaneously reveal our revolutionary new logo.
-          </p>
-        </div>
-
-        {/* Enhanced progress section with animations */}
-        <div className="mb-16 animate-fadeInUp delay-700">
-          <div className={`relative w-64 h-64 mx-auto mb-8 transition-all duration-500 ${pulseAnimation ? 'scale-110' : 'scale-100'} hover:scale-105`}>
-            {/* Outer glow ring with enhanced animation */}
-            <div className={`absolute inset-0 rounded-full transition-all duration-1000 ${isNearLaunch ? 'animate-pulse bg-gradient-to-r from-yellow-400/20 to-orange-400/20' : ''}`}></div>
-            
-            {/* Animated background rings */}
-            <div className="absolute inset-2 rounded-full border-2 border-white/5 animate-spin" style={{ animationDuration: '20s' }}></div>
-            <div className="absolute inset-4 rounded-full border border-white/10 animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }}></div>
-            
-            {/* Progress Ring with enhanced animations */}
-            <svg className="w-full h-full transform -rotate-90 transition-all duration-1000" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="42"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                className="text-white/10"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="42"
-                stroke="url(#gradient)"
-                strokeWidth="4"
-                fill="none"
-                strokeDasharray={`${2 * Math.PI * 42}`}
-                strokeDashoffset={`${2 * Math.PI * 42 * (1 - progressPercentage / 100)}`}
-                className="transition-all duration-1000 ease-out animate-pulse"
-                strokeLinecap="round"
-              />
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={launchState.isLaunched ? '#10B981' : '#3B82F6'} />
-                  <stop offset="50%" stopColor={launchState.isLaunched ? '#059669' : '#8B5CF6'} />
-                  <stop offset="100%" stopColor={launchState.isLaunched ? '#047857' : '#EC4899'} />
-                </linearGradient>
-              </defs>
-            </svg>
-            
-            {/* Enhanced counter with animations */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <div className={`text-5xl font-black text-white mb-2 transition-all duration-500 ${pulseAnimation ? 'scale-125 animate-bounce' : 'scale-100'} hover:scale-110`}>
-                  <span className="animate-countUp">{launchState.clickCount}</span>
-                </div>
-                <div className="text-lg text-white/60 font-medium animate-fadeIn delay-300">/ 3</div>
-                {isNearLaunch && !launchState.isLaunched && (
-                  <div className="text-yellow-400 text-sm font-bold animate-pulse mt-2 animate-bounce">
-                    Almost there!
-                  </div>
-                )}
-                {launchState.isLaunched && (
-                  <div className="text-emerald-400 text-sm font-bold mt-2 animate-pulse">
-                    🎉 LAUNCHED! 🎉
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Enhanced status indicators with animations */}
-          <div className="space-y-4 animate-fadeInUp delay-1000">
-            {/* Status indicator */}
-            <div className="flex items-center justify-center gap-3 text-white/80 hover:scale-105 transition-transform duration-300">
-              <Trophy size={24} className="text-yellow-400 animate-bounce delay-500" />
-              <span className="text-lg font-semibold animate-fadeIn delay-700">
-                <span className="animate-countUp">{launchState.clickCount}</span> Pioneers Ready
-              </span>
-            </div>
-            
-            {/* Dynamic progress bar with enhanced animations */}
-            <div className="w-full max-w-lg mx-auto bg-white/10 rounded-full h-3 overflow-hidden relative">
-              {/* Animated background shimmer */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-              
-              <div 
-                className={`h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden ${
-                  launchState.isLaunched 
-                    ? 'bg-gradient-to-r from-emerald-400 to-green-500' 
-                    : isNearLaunch 
-                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 animate-pulse' 
-                      : 'bg-gradient-to-r from-blue-400 to-purple-500'
-                }`}
-                style={{ width: `${progressPercentage}%` }}
-              >
-                {/* Progress bar shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-              </div>
-            </div>
-            
-            <div className="text-white/60 text-sm animate-fadeIn delay-1200">
-              {3 - launchState.clickCount > 0 
-                ? `${3 - launchState.clickCount} more needed to unlock the reveal`
-                : "🎉 Launch sequence activated!"
-              }
-            </div>
-          </div>
-        </div>
-
-        {/* Enhanced launch button or logo reveal */}
-        {!launchState.isLaunched ? (
-          <div className="mb-12 animate-fadeInUp delay-1500">
-            <button
-              onClick={handleLaunch}
-              disabled={hasClicked || !isConnected}
-              className={`
-                relative px-16 py-8 rounded-3xl font-black text-xl transition-all duration-500 transform group
-                ${hasClicked 
-                  ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white cursor-default scale-95 shadow-2xl shadow-emerald-500/25 animate-bounce' 
-                  : isConnected
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25 animate-glow' 
-                    : 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                } shadow-lg hover:shadow-xl
-              `}
-            >
-              {/* Button glow effect */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-400 to-purple-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl"></div>
-              
-              <div className="relative flex items-center gap-3">
-                {hasClicked ? (
-                  <>
-                    <Trophy size={28} className="animate-bounce" />
-                    <span>LAUNCHED!</span>
-                  </>
-                ) : (
-                  <>
-                    <Rocket size={28} className="group-hover:animate-bounce" />
-                    <span>LAUNCH NOW</span>
-                    <Sparkles size={20} className="group-hover:animate-spin" />
-                  </>
-                )}
-              </div>
-            </button>
-            
-            {!isConnected && (
-              <p className="text-red-400 text-sm mt-4 animate-pulse">
-                Connecting to server...
-              </p>
-            )}
-          </div>
-        ) : (
-          <div className="mb-12 animate-fadeInUp delay-1500">
-            <div className="text-6xl mb-8 animate-bounce">
-              🎉
-            </div>
-            <h3 className="text-4xl font-bold text-emerald-400 mb-4 animate-pulse">
-              LAUNCH SUCCESSFUL!
-            </h3>
-            <p className="text-xl text-white/80 mb-8 animate-fadeIn delay-500">
-              The logo has been revealed! Check the big screen for the full experience.
-            </p>
-          </div>
-        )}
-
-        {/* Reset button */}
-        <div className="animate-fadeInUp delay-2000">
-          <button
-            onClick={handleReset}
-            className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white/80 hover:text-white rounded-full transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/20"
-          >
-            <RotateCcw size={18} />
-            <span>Reset Launch</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Celebration overlay */}
-      {showCelebration && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <div className="text-center animate-revealLogo">
-            {/* Massive logo reveal */}
-            <div className="text-9xl md:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 mb-8 animate-scaleIn">
-              LOGO
-            </div>
-            
-            {/* Celebration text */}
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4 animate-bounce">
-              🎉 LAUNCHED! 🎉
-            </h2>
-            <p className="text-xl text-white/80 mb-8 animate-fadeIn delay-500">
-              The logo has been revealed to the world!
-            </p>
-            
-            {/* Confetti effect */}
-            <div className="absolute inset-0 pointer-events-none">
-              {[...Array(50)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-2 h-2 animate-confetti"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    backgroundColor: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'][Math.floor(Math.random() * 5)],
-                    animationDelay: `${Math.random() * 2}s`,
-                    animationDuration: `${2 + Math.random() * 2}s`
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Custom Animations */}
+      <style jsx>{`
+        @keyframes confetti {
+          0% { transform: translateY(0) rotate(0); opacity: 1; }
+          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .animate-confetti {
+          animation: confetti 3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.6s ease-out forwards;
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+      `}</style>
     </div>
   );
 }
 
 export default UserPage;
-     

@@ -112,8 +112,6 @@ function BigScreen() {
               document.body.style.animation = '';
             }, 800);
           }, 200);
-          
-          // No auto-close - celebration stays open until manually closed
         }
       };
       
@@ -154,61 +152,187 @@ function BigScreen() {
   const isNearLaunch = launchState.clickCount >= 2;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Enhanced animated background for big screen */}
-      <div className="absolute inset-0">
-        {/* Larger animated gradient orbs for big screen */}
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-500"></div>
-        
-        {/* More floating orbs */}
-        <div className="absolute top-1/6 right-1/3 w-48 h-48 bg-cyan-400/15 rounded-full blur-2xl animate-bounce delay-700"></div>
-        <div className="absolute bottom-1/6 left-1/6 w-64 h-64 bg-emerald-400/15 rounded-full blur-2xl animate-ping delay-300"></div>
-        
-        {/* More floating stars */}
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-white/40 rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${1.5 + Math.random() * 2}s`
-            }}
-          />
-        ))}
-        
-        {/* More shooting stars */}
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={`shooting-${i}`}
-            className="absolute w-3 h-1 bg-white/60 rounded-full animate-ping"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: '2s',
-              transform: 'rotate(45deg)'
-            }}
-          />
-        ))}
-        
-        {/* Animated grid pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="w-full h-full" style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '80px 80px',
-            animation: 'gridMove 20s linear infinite'
-          }}></div>
-        </div>
+    <div className="min-h-screen bg-white text-gray-800 font-sans relative overflow-hidden">
+
+      {/* Elegant Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Floating orange orbs */}
+        <div className="absolute top-20 left-20 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-70"></div>
+        <div className="absolute bottom-20 right-20 w-80 h-80 bg-orange-50 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-gray-100 rounded-full blur-2xl opacity-40"></div>
+
+        {/* Subtle grid */}
+        <div className="absolute inset-0 opacity-5" style={{
+          backgroundImage: `
+            linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px'
+        }}></div>
       </div>
 
-      {/* Celebration particles */}
+      {/* Connection Status - Clean & Professional */}
+      <div className="absolute top-6 right-6 flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 border border-gray-200 shadow-lg transition-all duration-300">
+        <div className={`w-4 h-4 rounded-full transition-all duration-300 ${isConnected ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'}`}></div>
+        <span className="text-sm font-medium text-gray-700">
+          {isConnected ? 'Connected' : 'Connecting...'}
+        </span>
+        {isConnected && <Zap size={16} className="text-orange-500 animate-bounce" />}
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto text-center relative z-10 pt-32 pb-20 px-6">
+
+        {/* Logo Placeholder */}
+        <div className="mb-16">
+          <h1 className="text-7xl md:text-8xl font-extrabold text-gray-900 tracking-tight mb-6">
+            LOGO
+          </h1>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+            LAUNCH EVENT
+          </h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Watch as we reveal our revolutionary new logo when <span className="font-semibold text-orange-600">3 participants</span> join the launch!
+          </p>
+        </div>
+
+        {/* Progress Circle - Elegant Orange Theme */}
+        <div className="mb-16">
+          <div className={`relative w-80 h-80 mx-auto mb-12 transition-all duration-500 ${isNearLaunch ? 'scale-105' : 'scale-100'}`}>
+
+            {/* Outer subtle ring */}
+            <div className="absolute inset-0 rounded-full border-2 border-gray-200"></div>
+
+            {/* Progress Ring */}
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                stroke="#f3f4f6"
+                strokeWidth="4"
+                fill="none"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                stroke={launchState.isLaunched ? "#10B981" : isNearLaunch ? "#F7941A" : "#D36B00"}
+                strokeWidth="6"
+                fill="none"
+                strokeDasharray={`${2 * Math.PI * 42}`}
+                strokeDashoffset={`${2 * Math.PI * 42 * (1 - progressPercentage / 100)}`}
+                className="transition-all duration-1000 ease-out"
+                strokeLinecap="round"
+              />
+            </svg>
+
+            {/* Center Status Text */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                {!launchState.isLaunched ? (
+                  <div className={`text-3xl font-bold transition-all duration-500 ${isNearLaunch ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-700'}`}>
+                    {isNearLaunch ? "READY TO REVEAL" : "WAITING"}
+                  </div>
+                ) : (
+                  <div className="text-green-600 text-3xl font-bold animate-pulse">
+                    🎉 LAUNCHED!
+                  </div>
+                )}
+                <div className="text-sm text-gray-500 mt-2">
+                  {launchState.clickCount} of 3 participants
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full max-w-xl mx-auto bg-gray-100 rounded-full h-3 overflow-hidden relative">
+            <div 
+              className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                launchState.isLaunched 
+                  ? 'bg-green-500' 
+                  : isNearLaunch 
+                    ? 'bg-orange-500' 
+                    : 'bg-gray-400'
+              }`}
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
+
+          {/* Status Message */}
+          <div className="mt-6 text-gray-600 text-lg">
+            {!launchState.isLaunched ? (
+              isNearLaunch ? (
+                <span className="font-medium text-orange-600">Launch sequence activated — one more to go!</span>
+              ) : (
+                <span>Waiting for participants to join the launch</span>
+              )
+            ) : (
+              <span className="font-medium text-green-600">🎉 Mission accomplished! The future is here.</span>
+            )}
+          </div>
+        </div>
+
+        {/* Waiting Message */}
+        {!launchState.isLaunched && (
+          <div className="mt-12">
+            <div className="text-2xl font-medium text-gray-700 mb-2">
+              Waiting for participants...
+            </div>
+            <p className="text-gray-500">
+              The logo will be revealed when 3 people click the launch button
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Celebration Overlay — Elegant & Vibrant */}
+      {showCelebration && (
+        <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
+
+          {/* Celebration Content */}
+          <div className="text-center relative z-10 px-6">
+            <div className="text-8xl md:text-9xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-8 animate-fadeIn">
+              LOGO
+            </div>
+            
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+              🎉 LAUNCHED! 🎉
+            </h2>
+            <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+              The logo has been revealed to the world!
+            </p>
+            
+            <button
+              onClick={() => setShowCelebration(false)}
+              className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-all duration-300 font-medium hover:scale-105 shadow-lg hover:shadow-xl text-lg"
+            >
+              Close Celebration
+            </button>
+          </div>
+
+          {/* Orange Confetti */}
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(80)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-4 h-4 animate-confetti"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  backgroundColor: ['#F7941A', '#D36B00', '#FFB74D', '#F57C00'][Math.floor(Math.random() * 4)],
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${3 + Math.random() * 2}s`,
+                  borderRadius: '50%'
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Celebration Particles (Stars) — Optional, fits theme */}
       {particles.map(particle => (
         <div
           key={particle.id}
@@ -220,209 +344,35 @@ function BigScreen() {
           }}
         >
           <Star 
-            size={12} 
-            className="text-yellow-400 animate-spin" 
+            size={14} 
+            className="text-orange-500" 
             fill="currentColor"
           />
         </div>
       ))}
 
-      {/* Connection status for big screen */}
-      <div className="absolute top-8 right-8 flex items-center gap-3 bg-black/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/10 animate-fadeInUp">
-        <div className={`w-4 h-4 rounded-full transition-all duration-300 ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400 animate-pulse'}`}></div>
-        <span className="text-lg text-white/80 font-medium">
-          {isConnected ? 'Big Screen Connected' : 'Connecting...'}
-        </span>
-        {isConnected && <Zap size={18} className="text-emerald-400 animate-bounce" />}
-      </div>
-
-      {/* Main content for big screen */}
-      <div className="max-w-6xl w-full text-center relative z-10">
-        {/* Enhanced header for big screen */}
-        <div className="mb-20 animate-fadeInUp">
-          <div className="flex items-center justify-center gap-6 mb-8">
-            <h1 className="text-8xl md:text-[10rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 tracking-tight animate-pulse">
-              LOGO
-            </h1>
-          </div>
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-fadeInUp delay-300">
-            LAUNCH EVENT
-          </h2>
-          <p className="text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed animate-fadeInUp delay-500">
-            Watch as we reveal our revolutionary new logo when <span className="font-bold text-yellow-400 animate-pulse">3 participants</span> join the launch!
-          </p>
-        </div>
-
-        {/* Enhanced progress section for big screen */}
-        <div className="mb-20 animate-fadeInUp delay-700">
-          <div className={`relative w-96 h-96 mx-auto mb-12 transition-all duration-500 ${isNearLaunch ? 'scale-110' : 'scale-100'}`}>
-            {/* Outer glow ring */}
-            <div className={`absolute inset-0 rounded-full transition-all duration-1000 ${isNearLaunch ? 'animate-pulse bg-gradient-to-r from-yellow-400/20 to-orange-400/20' : ''}`}></div>
-            
-            {/* Animated background rings */}
-            <div className="absolute inset-4 rounded-full border-4 border-white/5 animate-spin" style={{ animationDuration: '25s' }}></div>
-            <div className="absolute inset-8 rounded-full border-2 border-white/10 animate-spin" style={{ animationDuration: '20s', animationDirection: 'reverse' }}></div>
-            
-            {/* Progress Ring */}
-            <svg className="w-full h-full transform -rotate-90 transition-all duration-1000" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="42"
-                stroke="currentColor"
-                strokeWidth="3"
-                fill="none"
-                className="text-white/10"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="42"
-                stroke="url(#gradient)"
-                strokeWidth="6"
-                fill="none"
-                strokeDasharray={`${2 * Math.PI * 42}`}
-                strokeDashoffset={`${2 * Math.PI * 42 * (1 - progressPercentage / 100)}`}
-                className="transition-all duration-1000 ease-out animate-pulse"
-                strokeLinecap="round"
-              />
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={launchState.isLaunched ? '#10B981' : '#3B82F6'} />
-                  <stop offset="50%" stopColor={launchState.isLaunched ? '#059669' : '#8B5CF6'} />
-                  <stop offset="100%" stopColor={launchState.isLaunched ? '#047857' : '#EC4899'} />
-                </linearGradient>
-              </defs>
-            </svg>
-            
-            {/* Status display - no count shown */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                {!launchState.isLaunched ? (
-                  <div className={`text-4xl font-black text-white mb-4 transition-all duration-500 ${isNearLaunch ? 'scale-125 animate-bounce' : 'scale-100'}`}>
-                    {isNearLaunch ? (
-                      <div className="text-yellow-400 animate-pulse">
-                        READY TO REVEAL
-                      </div>
-                    ) : (
-                      <div className="text-blue-400 animate-pulse">
-                        WAITING FOR LAUNCH
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-emerald-400 text-4xl font-bold animate-pulse">
-                    🎉 LAUNCHED! 🎉
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Status indicators */}
-          <div className="space-y-6 animate-fadeInUp delay-1000">
-            <div className="text-3xl text-white/80 font-semibold animate-fadeIn delay-700">
-              {!launchState.isLaunched ? (
-                isNearLaunch ? (
-                  <span className="text-yellow-400 animate-pulse">Ready to Reveal</span>
-                ) : (
-                  <span className="text-blue-400 animate-pulse">Waiting for Launch</span>
-                )
-              ) : (
-                <span className="text-emerald-400 animate-pulse">Launch Complete</span>
-              )}
-            </div>
-            
-            {/* Progress bar */}
-            <div className="w-full max-w-2xl mx-auto bg-white/10 rounded-full h-4 overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-              
-              <div 
-                className={`h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden ${
-                  launchState.isLaunched 
-                    ? 'bg-gradient-to-r from-emerald-400 to-green-500' 
-                    : isNearLaunch 
-                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 animate-pulse' 
-                      : 'bg-gradient-to-r from-blue-400 to-purple-500'
-                }`}
-                style={{ width: `${progressPercentage}%` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-              </div>
-            </div>
-            
-            <div className="text-white/60 text-lg animate-fadeIn delay-1200">
-              {!launchState.isLaunched ? (
-                isNearLaunch ? (
-                  "🎉 Launch sequence activated!"
-                ) : (
-                  "Waiting for participants to join the launch"
-                )
-              ) : (
-                "🎉 Mission accomplished! The future is here. 🎉"
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Waiting message */}
-        {!launchState.isLaunched && (
-          <div className="animate-fadeInUp delay-1500">
-            <div className="text-4xl text-white/60 font-semibold mb-4">
-              Waiting for participants...
-            </div>
-            <p className="text-xl text-white/40">
-              The logo will be revealed when 3 people click the launch button
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Celebration overlay for big screen */}
-      {showCelebration && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <div className="text-center animate-revealLogo">
-            {/* Massive logo reveal for big screen */}
-            <div className="text-[15rem] md:text-[20rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 mb-12 animate-scaleIn">
-              LOGO
-            </div>
-            
-            {/* Celebration text */}
-            <h2 className="text-6xl md:text-8xl font-bold text-white mb-8 animate-bounce">
-              🎉 LAUNCHED! 🎉
-            </h2>
-            <p className="text-3xl text-white/80 mb-12 animate-fadeIn delay-500">
-              The logo has been revealed to the world!
-            </p>
-            
-            {/* Close button */}
-            <button
-              onClick={() => setShowCelebration(false)}
-              className="mt-8 px-12 py-6 bg-white/20 hover:bg-white/30 text-white rounded-2xl transition-all duration-300 flex items-center gap-4 mx-auto border border-white/30 hover:border-white/50 font-semibold hover:scale-105 animate-fadeInUp delay-1000 text-2xl"
-            >
-              <span>✕</span>
-              <span>Close Celebration</span>
-            </button>
-            
-            {/* Enhanced confetti effect for big screen */}
-            <div className="absolute inset-0 pointer-events-none">
-              {[...Array(100)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-3 h-3 animate-confetti"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    backgroundColor: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'][Math.floor(Math.random() * 7)],
-                    animationDelay: `${Math.random() * 3}s`,
-                    animationDuration: `${3 + Math.random() * 2}s`
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Custom Animations (add to global CSS or styled-components) */}
+      <style jsx>{`
+        @keyframes confetti {
+          0% { transform: translateY(0) rotate(0); opacity: 1; }
+          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .animate-confetti {
+          animation: confetti 3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+      `}</style>
     </div>
   );
 }
