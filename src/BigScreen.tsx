@@ -83,8 +83,9 @@ function BigScreen() {
       
       let wsUrl;
       if (isProduction) {
-        wsUrl = 'wss://launch-page-production.up.railway.app';
-        console.log('Big Screen: Connecting to Railway WebSocket backend');
+        // Updated to use Render URL
+        wsUrl = 'wss://launch-page-k7rh.onrender.com';
+        console.log('Big Screen: Connecting to Render WebSocket backend');
       } else {
         wsUrl = `${wsProtocol}//${wsHost}:3001`;
       }
@@ -95,7 +96,7 @@ function BigScreen() {
       websocket.onopen = () => {
         setIsConnected(true);
         connectionAttemptsRef.current = 0;
-        console.log('✅ Big Screen connected to WebSocket server');
+        console.log('✅ Big Screen connected to Render WebSocket server');
       };
       
       websocket.onmessage = (event) => {
@@ -117,7 +118,7 @@ function BigScreen() {
       
       websocket.onclose = () => {
         setIsConnected(false);
-        console.log('❌ Big Screen disconnected from WebSocket server');
+        console.log('❌ Big Screen disconnected from Render WebSocket server');
         
         if (connectionAttemptsRef.current < 5) {
           console.log(`🔄 Big Screen retrying connection (attempt ${connectionAttemptsRef.current + 1}/5)...`);
@@ -154,30 +155,12 @@ function BigScreen() {
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans relative overflow-hidden">
 
-      {/* Elegant Background Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Floating orange orbs */}
-        <div className="absolute top-20 left-20 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-70"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-orange-50 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-gray-100 rounded-full blur-2xl opacity-40"></div>
-
-        {/* Subtle grid */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: `
-            linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px'
-        }}></div>
-      </div>
-
       {/* Connection Status - Clean & Professional */}
       <div className="absolute top-6 right-6 flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 border border-gray-200 shadow-lg transition-all duration-300">
         <div className={`w-4 h-4 rounded-full transition-all duration-300 ${isConnected ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'}`}></div>
-        <span className="text-sm font-medium text-gray-700">
+        <span className="text-sm font-light text-gray-700">
           {isConnected ? 'Connected' : 'Connecting...'}
         </span>
-        {isConnected && <Zap size={16} className="text-orange-500 animate-bounce" />}
       </div>
 
       {/* Main Content */}
@@ -185,14 +168,14 @@ function BigScreen() {
 
         {/* Logo Placeholder */}
         <div className="mb-16">
-          <h1 className="text-7xl md:text-8xl font-extrabold text-gray-900 tracking-tight mb-6">
+          <h1 className="text-7xl md:text-8xl font-light text-gray-900 tracking-tight mb-6 drop-shadow-lg">
             LOGO
           </h1>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h2 className="text-4xl md:text-5xl font-light text-gray-800 mb-4">
             LAUNCH EVENT
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Watch as we reveal our revolutionary new logo when <span className="font-semibold text-orange-600">3 participants</span> join the launch!
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-light">
+            Watch as we reveal our new product when <span className="font-light text-orange-600">3 participants</span> join the launch.
           </p>
         </div>
 
@@ -231,15 +214,15 @@ function BigScreen() {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
                 {!launchState.isLaunched ? (
-                  <div className={`text-3xl font-bold transition-all duration-500 ${isNearLaunch ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-700'}`}>
+                  <div className={`text-3xl font-light transition-all duration-500 ${isNearLaunch ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-700'}`}>
                     {isNearLaunch ? "READY TO REVEAL" : "WAITING"}
                   </div>
                 ) : (
-                  <div className="text-green-600 text-3xl font-bold animate-pulse">
-                    🎉 LAUNCHED!
+                  <div className="text-green-600 text-3xl font-light animate-pulse">
+                    LAUNCHED
                   </div>
                 )}
-                <div className="text-sm text-gray-500 mt-2">
+                <div className="text-sm text-gray-500 mt-2 font-light">
                   {launchState.clickCount} of 3 participants
                 </div>
               </div>
@@ -261,15 +244,15 @@ function BigScreen() {
           </div>
 
           {/* Status Message */}
-          <div className="mt-6 text-gray-600 text-lg">
+          <div className="mt-6 text-gray-600 text-lg font-light">
             {!launchState.isLaunched ? (
               isNearLaunch ? (
-                <span className="font-medium text-orange-600">Launch sequence activated — one more to go!</span>
+                <span className="font-light text-orange-600">Launch sequence activated — one more to go</span>
               ) : (
                 <span>Waiting for participants to join the launch</span>
               )
             ) : (
-              <span className="font-medium text-green-600">🎉 Mission accomplished! The future is here.</span>
+              <span className="font-light text-green-600">Mission accomplished</span>
             )}
           </div>
         </div>
@@ -277,11 +260,11 @@ function BigScreen() {
         {/* Waiting Message */}
         {!launchState.isLaunched && (
           <div className="mt-12">
-            <div className="text-2xl font-medium text-gray-700 mb-2">
-              Waiting for participants...
+            <div className="text-2xl font-light text-gray-700 mb-2">
+              Waiting for participants
             </div>
-            <p className="text-gray-500">
-              The logo will be revealed when 3 people click the launch button
+            <p className="text-gray-500 font-light">
+              The product will be revealed when 3 people click the launch button
             </p>
           </div>
         )}
@@ -293,41 +276,23 @@ function BigScreen() {
 
           {/* Celebration Content */}
           <div className="text-center relative z-10 px-6">
-            <div className="text-8xl md:text-9xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-8 animate-fadeIn">
+            <div className="text-8xl md:text-9xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-8 animate-fadeIn drop-shadow-lg">
               LOGO
             </div>
             
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              🎉 LAUNCHED! 🎉
+            <h2 className="text-5xl md:text-6xl font-light text-gray-900 mb-6">
+              LAUNCHED
             </h2>
-            <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
-              The logo has been revealed to the world!
+            <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
+              The product has been revealed.
             </p>
             
             <button
               onClick={() => setShowCelebration(false)}
-              className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-all duration-300 font-medium hover:scale-105 shadow-lg hover:shadow-xl text-lg"
+              className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-all duration-300 font-light hover:scale-105 shadow-lg text-lg"
             >
-              Close Celebration
+              Close
             </button>
-          </div>
-
-          {/* Orange Confetti */}
-          <div className="absolute inset-0 pointer-events-none">
-            {[...Array(80)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-4 h-4 animate-confetti"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  backgroundColor: ['#F7941A', '#D36B00', '#FFB74D', '#F57C00'][Math.floor(Math.random() * 4)],
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${3 + Math.random() * 2}s`,
-                  borderRadius: '50%'
-                }}
-              />
-            ))}
           </div>
         </div>
       )}

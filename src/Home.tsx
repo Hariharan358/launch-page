@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Home() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white text-gray-800 text-center p-6 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white text-gray-800 text-center p-6 relative overflow-hidden font-sans">
 
       {/* Elegant Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
@@ -26,36 +26,25 @@ function Home() {
       <div className="relative z-10 max-w-3xl mx-auto">
 
         {/* Title — Elegant Orange Gradient */}
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-700 bg-clip-text text-transparent animate-pulse">
-          🚀 Welcome to the Launch Event
+        <h1 className="text-5xl md:text-6xl font-light mb-6 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-700 bg-clip-text text-transparent">
+          Welcome to the Launch Event
         </h1>
 
         {/* Description — Clean & Professional */}
-        <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-          Be part of something exciting! Join the event and witness the reveal with just{" "}
-          <span className="font-bold text-orange-600">3 participants</span>.
+        <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed font-light">
+          Be part of something exciting. Join the event and witness the reveal with just{" "}
+          <span className="font-light text-orange-600">3 participants</span>.
         </p>
 
         {/* CTA Button — Vibrant Orange Popper Style */}
         <Link
-          to="/launch"
-          className="px-8 py-4 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 hover:from-orange-600 hover:to-orange-800 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-orange-300"
+          to="/"
+          className="px-8 py-4 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 hover:from-orange-600 hover:to-orange-800 text-white font-light text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95"
         >
-          Go to Launch Page 🚀
+          Go to Launch Page
         </Link>
 
       </div>
-
-      {/* Optional: Floating decorative elements */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        .floating {
-          animation: float 4s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 }

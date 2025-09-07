@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Rocket, Sparkles, RotateCcw, Zap, Star, Trophy } from 'lucide-react';
+import { Rocket, RotateCcw, Zap, Star, Trophy } from 'lucide-react';
 
 interface LaunchState {
   clickCount: number;
@@ -86,8 +86,9 @@ function UserPage() {
       
       let wsUrl;
       if (isProduction) {
-        wsUrl = 'wss://launch-page-production.up.railway.app';
-        console.log('Production mode: Connecting to Railway WebSocket backend');
+        // Updated to use Render URL
+        wsUrl = 'wss://launch-page-k7rh.onrender.com';
+        console.log('Production mode: Connecting to Render WebSocket backend');
       } else {
         wsUrl = `${wsProtocol}//${wsHost}:3001`;
       }
@@ -98,7 +99,7 @@ function UserPage() {
       websocket.onopen = () => {
         setIsConnected(true);
         connectionAttemptsRef.current = 0;
-        console.log('✅ Connected to Railway WebSocket server');
+        console.log('✅ Connected to Render WebSocket server');
       };
       
       websocket.onmessage = (event) => {
@@ -125,7 +126,7 @@ function UserPage() {
       
       websocket.onclose = () => {
         setIsConnected(false);
-        console.log('❌ Disconnected from Railway WebSocket server');
+        console.log('❌ Disconnected from Render WebSocket server');
         
         if (connectionAttemptsRef.current < 5) {
           console.log(`🔄 Retrying connection (attempt ${connectionAttemptsRef.current + 1}/5)...`);
@@ -137,7 +138,7 @@ function UserPage() {
       };
       
       websocket.onerror = (error) => {
-        console.error('❌ Railway WebSocket error:', error);
+        console.error('❌ Render WebSocket error:', error);
         setIsConnected(false);
       };
       
@@ -185,30 +186,13 @@ function UserPage() {
   const isNearLaunch = launchState.clickCount >= 2;
 
   return (
-    <div className="min-h-screen bg-white text-gray-800 flex items-center justify-center p-6 relative overflow-hidden">
-
-      {/* Elegant Background Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Floating orange orbs */}
-        <div className="absolute top-20 left-20 w-96 h-96 bg-orange-100 rounded-full blur-3xl opacity-70"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-orange-50 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-gray-100 rounded-full blur-2xl opacity-40"></div>
-
-        {/* Subtle grid */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: `
-            linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px'
-        }}></div>
-      </div>
+    <div className="min-h-screen bg-white text-gray-800 flex items-center justify-center p-6 relative overflow-hidden font-sans">
 
       {/* Connection Status — Clean & Professional */}
       <div
         className="
           absolute right-6 
-          top-0 sm:top-5   // ✅ closer to top on small screens
+          top-0 sm:top-5
           flex items-center gap-3 
           bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 
           border border-gray-200 shadow-md 
@@ -220,16 +204,15 @@ function UserPage() {
             isConnected ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'
           }`}
         ></div>
-        <span className="text-sm font-medium text-gray-700">
+        <span className="text-sm font-light text-gray-700">
           {isConnected ? 'Connected' : 'Connecting...'}
         </span>
-        {isConnected && <Zap size={14} className="text-orange-500 animate-bounce" />}
       </div>
 
 
       {/* Participant Counter — Minimal & Elegant */}
       <div className="absolute top-6 left-6 flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200 shadow-md">
-        <span className="text-xl font-bold text-gray-800">{launchState.clickCount}</span>
+        <span className="text-xl font-light text-gray-800">{launchState.clickCount}</span>
         <span className="text-gray-500 text-sm">/ 3</span>
       </div>
 
@@ -238,14 +221,14 @@ function UserPage() {
 
         {/* Logo Placeholder */}
         <div className="mb-12">
-          <h1 className="text-6xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
+          <h1 className="text-6xl md:text-6xl font-light text-gray-900 tracking-tight mb-4 drop-shadow-lg">
             LOGO
           </h1>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-light text-gray-800 mb-4">
             LAUNCH EVENT
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Join the exclusive launch! We need exactly <span className="font-semibold text-orange-600">3 participants</span> to simultaneously reveal our revolutionary new logo.
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed font-light">
+            Join the exclusive launch. We need exactly <span className="font-light text-orange-600">3 participants</span> to simultaneously reveal our new product.
           </p>
         </div>
 
@@ -283,18 +266,18 @@ function UserPage() {
             {/* Center Status */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <div className={`text-4xl font-bold transition-all duration-500 ${pulseAnimation ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-800'}`}>
+                <div className={`text-4xl font-light transition-all duration-500 ${pulseAnimation ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-800'}`}>
                   {launchState.clickCount}
                 </div>
-                <div className="text-sm text-gray-500 mt-1">/ 3</div>
+                <div className="text-sm text-gray-500 mt-1 font-light">/ 3</div>
                 {isNearLaunch && !launchState.isLaunched && (
-                  <div className="text-orange-600 text-xs font-medium mt-2 animate-pulse">
-                    Almost there!
+                  <div className="text-orange-600 text-xs font-light mt-2 animate-pulse">
+                    Almost there
                   </div>
                 )}
                 {launchState.isLaunched && (
-                  <div className="text-green-600 text-xs font-medium mt-2 animate-pulse">
-                    🎉 LAUNCHED!
+                  <div className="text-green-600 text-xs font-light mt-2">
+                    Launched
                   </div>
                 )}
               </div>
@@ -315,10 +298,10 @@ function UserPage() {
             ></div>
           </div>
 
-          <div className="mt-4 text-gray-600 text-sm">
+          <div className="mt-4 text-gray-600 text-sm font-light">
             {3 - launchState.clickCount > 0 
-              ? `${3 - launchState.clickCount} more needed to unlock the reveal`
-              : "🎉 Launch sequence activated!"
+              ? `${3 - launchState.clickCount} more needed to unlock`
+              : "Launch sequence activated"
             }
           </div>
         </div>
@@ -330,7 +313,7 @@ function UserPage() {
               onClick={handleLaunch}
               disabled={hasClicked || !isConnected}
               className={`
-                relative px-10 py-5 rounded-xl font-bold text-lg transition-all duration-300 transform
+                relative px-10 py-5 rounded-xl font-light text-lg transition-all duration-300 transform
                 ${hasClicked 
                   ? 'bg-green-600 text-white cursor-default scale-100 shadow-lg' 
                   : isConnected
@@ -343,32 +326,30 @@ function UserPage() {
                 {hasClicked ? (
                   <>
                     <Trophy size={20} />
-                    <span>LAUNCHED!</span>
+                    <span>LAUNCHED</span>
                   </>
                 ) : (
                   <>
                     <Rocket size={20} />
                     <span>LAUNCH NOW</span>
-                    <Sparkles size={16} />
                   </>
                 )}
               </div>
             </button>
 
             {!isConnected && (
-              <p className="text-orange-600 text-sm mt-3 animate-pulse">
+              <p className="text-orange-600 text-sm mt-3 animate-pulse font-light">
                 Connecting to server...
               </p>
             )}
           </div>
         ) : (
           <div className="mb-8">
-            <div className="text-5xl mb-4">🎉</div>
-            <h3 className="text-3xl font-bold text-green-600 mb-2">
-              LAUNCH SUCCESSFUL!
+            <h3 className="text-3xl font-light text-green-600 mb-2">
+              LAUNCH SUCCESSFUL
             </h3>
-            <p className="text-gray-600">
-              The logo has been revealed! Check the big screen for the full experience.
+            <p className="text-gray-600 font-light">
+              The product has been revealed.
             </p>
           </div>
         )}
@@ -377,7 +358,7 @@ function UserPage() {
         <div>
           <button
             onClick={handleReset}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-300 hover:scale-105 border border-gray-200"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-300 hover:scale-105 border border-gray-200 font-light"
           >
             <RotateCcw size={16} />
             <span>Reset Launch</span>
@@ -390,41 +371,23 @@ function UserPage() {
         <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
 
           <div className="text-center relative z-10 px-6">
-            <div className="text-7xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-6 animate-fadeIn">
+            <div className="text-7xl md:text-8xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-6 animate-fadeIn drop-shadow-lg">
               LOGO
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              🎉 LAUNCHED! 🎉
+            <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-4">
+              LAUNCHED
             </h2>
-            <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
-              The logo has been revealed to the world!
+            <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto font-light">
+              The product has been revealed.
             </p>
             
             <button
               onClick={() => setShowCelebration(false)}
-              className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-all duration-300 font-medium hover:scale-105 shadow-md"
+              className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-all duration-300 font-light hover:scale-105 shadow-md"
             >
               Close
             </button>
-          </div>
-
-          {/* Orange Confetti */}
-          <div className="absolute inset-0 pointer-events-none">
-            {[...Array(60)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-3 h-3 animate-confetti"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  backgroundColor: ['#F7941A', '#D36B00', '#FFB74D', '#F57C00'][Math.floor(Math.random() * 4)],
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${3 + Math.random() * 2}s`,
-                  borderRadius: '50%'
-                }}
-              />
-            ))}
           </div>
         </div>
       )}
