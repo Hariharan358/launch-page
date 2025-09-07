@@ -1,0 +1,12 @@
+{
+  "root": "dist/",
+  "routes": {
+    "/**": "index.html"
+  },
+  "https_only": true,
+  "headers": {
+    "/**": {
+      "Cache-Control": "no-cache, no-store, must-revalidate"
+    }
+  }
+}
