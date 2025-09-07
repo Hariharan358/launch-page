@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Star, Zap } from 'lucide-react';
+import launch from "./logo/launch.jpg"
 
 interface LaunchState {
   clickCount: number;
@@ -275,6 +276,11 @@ function BigScreen() {
             <h2 className="text-5xl md:text-6xl font-light text-gray-900 mb-6">
               LAUNCHED
             </h2>
+            <img
+              src={launch} // 👈 Make sure you imported this: import logo from './logo/casa.png';
+              alt="Revealed Product"
+              className="h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+            />
             <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
               The product has been revealed.
             </p>
