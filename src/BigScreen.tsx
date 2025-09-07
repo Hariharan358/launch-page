@@ -261,17 +261,18 @@ function BigScreen() {
 
         {/* 👇 Large Product Reveal Below Progress Circle */}
         {launchState.isLaunched && (
-          <div className="mb-12 flex flex-col items-center animate-fadeIn">
+          <div className="mb-12 flex flex-col items-center justify-center animate-fadeIn px-4">
             <img
               src={launch}
               alt="Revealed Product"
-              className="h-48 md:h-64 mb-6 drop-shadow-xl rounded-xl transition-all duration-700 hover:scale-105 border border-gray-100"
+              className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-auto mb-6 drop-shadow-xl rounded-xl transition-all duration-700 hover:scale-105 border border-gray-100"
             />
             <p className="text-gray-600 font-light text-lg max-w-lg text-center">
               The product has been successfully revealed to the world.
             </p>
           </div>
         )}
+
 
         {/* Waiting Message — only shown before launch */}
         {!launchState.isLaunched && (
@@ -304,7 +305,7 @@ function BigScreen() {
             <img
               src={launch}
               alt="Revealed Product"
-              className="h-32 md:h-40 mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+              className="w-32 sm:w-40 md:w-48 lg:w-56 h-auto mb-6 drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
             />
 
             <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
