@@ -1,5 +1,6 @@
 // src/Home.tsx
 import { Link } from "react-router-dom";
+import logo from './logo/casa.png'; // 👈 Import your logo (adjust path as needed)
 
 function Home() {
   return (
@@ -24,6 +25,13 @@ function Home() {
 
       {/* Main Content */}
       <div className="relative z-10 max-w-3xl mx-auto">
+
+        {/* 👇 Add Logo/Image Here */}
+        <img
+          src={logo}
+          alt="Event Logo"
+          className="h-21 w-auto md:h-24 mx-auto mb-8 drop-shadow-md"
+        />
 
         {/* Title — Elegant Orange Gradient */}
         <h1 className="text-5xl md:text-6xl font-light mb-6 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-700 bg-clip-text text-transparent">

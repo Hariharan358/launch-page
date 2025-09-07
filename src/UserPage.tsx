@@ -188,34 +188,6 @@ function UserPage() {
   return (
     <div className="min-h-screen bg-white text-gray-800 flex items-center justify-center p-6 relative overflow-hidden font-sans">
 
-      {/* Connection Status — Clean & Professional */}
-      <div
-        className="
-          absolute right-6 
-          top-0 sm:top-5
-          flex items-center gap-3 
-          bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 
-          border border-gray-200 shadow-md 
-          transition-all duration-300
-        "
-      >
-        <div
-          className={`w-3 h-3 rounded-full transition-all duration-300 ${
-            isConnected ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'
-          }`}
-        ></div>
-        <span className="text-sm font-light text-gray-700">
-          {isConnected ? 'Connected' : 'Connecting...'}
-        </span>
-      </div>
-
-
-      {/* Participant Counter — Minimal & Elegant */}
-      <div className="absolute top-6 left-6 flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-gray-200 shadow-md">
-        <span className="text-xl font-light text-gray-800">{launchState.clickCount}</span>
-        <span className="text-gray-500 text-sm">/ 3</span>
-      </div>
-
       {/* Main Content */}
       <div className="max-w-3xl w-full text-center relative z-10">
 

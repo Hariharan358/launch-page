@@ -24,7 +24,7 @@ function BigScreen() {
     isLaunched: false,
     participants: []
   });
-  const [isConnected, setIsConnected] = useState(false);
+  
   const [showCelebration, setShowCelebration] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
   const connectionAttemptsRef = useRef(0);
@@ -154,14 +154,6 @@ function BigScreen() {
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans relative overflow-hidden">
-
-      {/* Connection Status - Clean & Professional */}
-      <div className="absolute top-6 right-6 flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 border border-gray-200 shadow-lg transition-all duration-300">
-        <div className={`w-4 h-4 rounded-full transition-all duration-300 ${isConnected ? 'bg-orange-500 animate-pulse' : 'bg-gray-400'}`}></div>
-        <span className="text-sm font-light text-gray-700">
-          {isConnected ? 'Connected' : 'Connecting...'}
-        </span>
-      </div>
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto text-center relative z-10 pt-32 pb-20 px-6">

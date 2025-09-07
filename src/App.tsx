@@ -71,52 +71,6 @@ function App() {
             {/* Logo / Title */}
             <div className="flex items-center space-x-3">
               <img src={logo} alt="Logo" className="h-10 w-auto drop-shadow-lg" />
-              <h1 className="text-xl md:text-2xl font-light bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">
-                LOGO Launch
-              </h1>
-            </div>
-
-            {/* Desktop Navigation - Hidden on mobile */}
-            <div className="hidden md:flex space-x-3">
-              <button
-                onClick={navigateToUserPage}
-                className={`
-                  px-5 py-2.5 rounded-xl font-light text-sm transition-all duration-300
-                  ${currentPage === 'user'
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
-                  }
-                `}
-              >
-                User Page
-              </button>
-
-              <button
-                onClick={navigateToBigScreen}
-                className={`
-                  px-5 py-2.5 rounded-xl font-light text-sm transition-all duration-300
-                  ${currentPage === 'bigscreen'
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
-                  }
-                `}
-              >
-                Big Screen
-              </button>
-            </div>
-
-            {/* Mobile menu button - Visible only on mobile */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none"
-              >
-                <div className="w-6 h-6 flex flex-col justify-center items-center">
-                  <span className={`block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm bg-current ${isMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-0.5'}`}></span>
-                  <span className={`block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm bg-current my-1 ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-                  <span className={`block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm bg-current ${isMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-0.5'}`}></span>
-                </div>
-              </button>
             </div>
           </div>
         </div>
