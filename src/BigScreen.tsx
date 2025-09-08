@@ -107,10 +107,10 @@ function BigScreen() {
 
           // Trigger screen shake effect
           setTimeout(() => {
-            document.body.style.animation = 'shake 0.8s ease-in-out';
+            document.body.style.animation = 'shake 0.5s ease-in-out';
             setTimeout(() => {
               document.body.style.animation = '';
-            }, 800);
+            }, 500);
           }, 200);
         }
       };
@@ -291,6 +291,21 @@ function BigScreen() {
 {showCelebration && (
   <div className="fixed inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-50">
 
+    {/* Confetti Poppers */}
+    {[...Array(50)].map((_, i) => (
+      <div
+        key={i}
+        className="absolute w-3 h-3 animate-confetti pointer-events-none"
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: '-10px',
+          backgroundColor: ['#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#10b981', '#f97316'][Math.floor(Math.random() * 6)],
+          animationDelay: `${Math.random() * 2}s`,
+          animationDuration: `${2 + Math.random() * 2}s`
+        }}
+      />
+    ))}
+
     {/* Celebration Content */}
     <div className="text-center relative z-10 px-6">
       <div className="text-8xl md:text-9xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-8 animate-fadeIn drop-shadow-lg">
@@ -361,8 +376,8 @@ function BigScreen() {
         }
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-          20%, 40%, 60%, 80% { transform: translateX(5px); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+          20%, 40%, 60%, 80% { transform: translateX(2px); }
         }
       `}</style>
     </div>
