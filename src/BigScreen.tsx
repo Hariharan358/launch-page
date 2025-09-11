@@ -67,6 +67,20 @@ function BigScreen() {
     return () => clearInterval(interval);
   }, [showCelebration]);
 
+  // Lock page scroll while celebration overlay is visible
+  useEffect(() => {
+    if (showCelebration) {
+      const prevHtmlOverflow = document.documentElement.style.overflow;
+      const prevBodyOverflow = document.body.style.overflow;
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.documentElement.style.overflow = prevHtmlOverflow;
+        document.body.style.overflow = prevBodyOverflow;
+      };
+    }
+  }, [showCelebration]);
+
   // WebSocket connection for big screen
   useEffect(() => {
     let websocket: WebSocket | null = null;
@@ -153,24 +167,24 @@ function BigScreen() {
     <div className="min-h-screen bg-white text-gray-800 font-sans relative overflow-hidden">
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto text-center relative z-10 pt-32 pb-20 px-6">
+      <div className="max-w-3xl mx-auto text-center relative z-10 pt-16 pb-10 px-4">
 
         {/* Logo Placeholder */}
-        <div className="mb-16">
-          <h1 className="text-7xl md:text-8xl font-light text-gray-900 tracking-tight mb-6 drop-shadow-lg">
+        <div className="mb-8">
+          <h1 className="text-6xl md:text-7xl font-light text-gray-900 tracking-tight mb-3 drop-shadow-lg">
             LOGO
           </h1>
-          <h2 className="text-4xl md:text-5xl font-light text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-light text-gray-800 mb-2">
             LAUNCH EVENT
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-light">
+          <p className="text-base md:text-lg text-gray-600 max-w-lg mx-auto leading-relaxed font-light">
             Watch as we reveal our new product when <span className="font-light text-orange-600">3 participants</span> join the launch.
           </p>
         </div>
 
         {/* Progress Circle - Elegant Orange Theme */}
-        <div className="mb-16">
-          <div className={`relative w-80 h-80 mx-auto mb-12 transition-all duration-500 ${isNearLaunch ? 'scale-105' : 'scale-100'}`}>
+        <div className="mb-8">
+          <div className={`relative w-64 h-64 mx-auto mb-8 transition-all duration-500 ${isNearLaunch ? 'scale-105' : 'scale-100'}`}>
 
             {/* Outer subtle ring */}
             <div className="absolute inset-0 rounded-full border-2 border-gray-200"></div>
@@ -220,7 +234,7 @@ function BigScreen() {
                   <img
                     src={launch}
                     alt="Revealed Product"
-                    className="h-32 md:h-40 mb-3 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
+                    className="h-24 md:h-28 mb-1 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
                   />
 
                   <div className="text-xs text-gray-500 font-light">
@@ -232,7 +246,7 @@ function BigScreen() {
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full max-w-xl mx-auto bg-gray-100 rounded-full h-3 overflow-hidden relative">
+          <div className="w-full max-w-md mx-auto bg-gray-100 rounded-full h-2 overflow-hidden relative">
             <div
               className={`h-full rounded-full transition-all duration-1000 ease-out ${
                 launchState.isLaunched
@@ -246,7 +260,7 @@ function BigScreen() {
           </div>
 
           {/* Status Message */}
-          <div className="mt-6 text-gray-600 text-lg font-light">
+          <div className="mt-3 text-gray-600 text-base font-light">
             {!launchState.isLaunched ? (
               isNearLaunch ? (
                 <span className="font-light text-orange-600">Launch sequence activated — one more to go</span>
@@ -261,13 +275,13 @@ function BigScreen() {
 
         {/* 👇 Large Product Reveal Below Progress Circle */}
         {launchState.isLaunched && (
-          <div className="mb-12 flex flex-col items-center justify-center animate-fadeIn px-4">
+          <div className="mb-8 flex flex-col items-center justify-center animate-fadeIn px-4">
             <img
               src={launch}
               alt="Revealed Product"
-              className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-auto mb-6 drop-shadow-xl rounded-xl transition-all duration-700 hover:scale-105 border border-gray-100"
+              className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-lg xl:max-w-lg h-auto mb-4 drop-shadow-xl rounded-xl transition-all duration-700 hover:scale-105 border border-gray-100"
             />
-            <p className="text-gray-600 font-light text-lg max-w-lg text-center">
+            <p className="text-gray-600 font-light text-sm max-w-sm text-center">
               The product has been successfully revealed to the world.
             </p>
           </div>
@@ -307,31 +321,31 @@ function BigScreen() {
     ))}
 
     {/* Celebration Content */}
-    <div className="text-center relative z-10 px-6">
-      <div className="text-8xl md:text-9xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-8 animate-fadeIn drop-shadow-lg">
+    <div className="text-center relative z-10 px-4 max-w-3xl w-full max-h-[90vh] overflow-hidden">
+      <div className="text-7xl md:text-8xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-6 animate-fadeIn drop-shadow-lg">
         LOGO
       </div>
 
-      <h2 className="text-5xl md:text-6xl font-light text-gray-900 mb-6">
+      <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-5">
         LAUNCHED
       </h2>
 
       {/* ✅ FIXED: Added `block` to make mx-auto work */}
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-5">
         <img
           src={launch}
           alt="Revealed Product"
-          className="w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] xl:w-[36rem] h-auto drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
+          className="w-72 sm:w-80 md:w-[22rem] lg:w-[26rem] xl:w-[30rem] h-auto drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
         />
       </div>
 
-      <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto font-light">
+      <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto font-light">
         The product has been revealed.
       </p>
 
       <button
         onClick={() => setShowCelebration(false)}
-        className="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-all duration-300 font-light hover:scale-105 shadow-lg text-lg"
+        className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-all duration-300 font-light hover:scale-105 shadow-lg text-base"
       >
         Close
       </button>
