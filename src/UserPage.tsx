@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Rocket, RotateCcw, Star, Trophy } from 'lucide-react';
+import launchLogo from "./logo/launch.png";
 import casa from "./logo/casa.png";
 
 interface LaunchState {
@@ -81,11 +82,17 @@ function UserPage() {
         setIsConnected(true);
         connectionAttemptsRef.current = 0;
         console.log('✅ Connected to WebSocket server');
+        ;(window as any).__globalLaunchWS = websocket;
       };
 
       websocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setLaunchState(data);
+
+        // If big screen signaled reveal complete, ensure users see launched logo
+        if (data.revealComplete && data.isLaunched) {
+          setHasClicked(true);
+        }
 
         if (data.isLaunched && !showCelebration) {
           setShowCelebration(true);
@@ -195,22 +202,25 @@ function UserPage() {
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <div className={`text-2xl sm:text-3xl md:text-4xl font-light transition-all duration-500 ${pulseAnimation ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-800'}`}>
-                  {launchState.clickCount}
+              {!launchState.isLaunched ? (
+                <div className="text-center">
+                  <div className={`text-2xl sm:text-3xl md:text-4xl font-light transition-all duration-500 ${pulseAnimation ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-800'}`}>
+                    {launchState.clickCount}
+                  </div>
+                  <div className="text-xs sm:text-sm md:text-sm text-gray-500 mt-1 font-light">/ 3</div>
+                  {isNearLaunch && (
+                    <div className="text-orange-600 text-xs sm:text-sm md:text-sm font-light mt-2 animate-pulse">
+                      Almost there
+                    </div>
+                  )}
                 </div>
-                <div className="text-xs sm:text-sm md:text-sm text-gray-500 mt-1 font-light">/ 3</div>
-                {isNearLaunch && !launchState.isLaunched && (
-                  <div className="text-orange-600 text-xs sm:text-sm md:text-sm font-light mt-2 animate-pulse">
-                    Almost there
-                  </div>
-                )}
-                {launchState.isLaunched && (
-                  <div className="text-green-600 text-xs sm:text-sm md:text-sm font-light mt-2">
-                    Launched
-                  </div>
-                )}
-              </div>
+              ) : (
+                <img
+                  src={launchLogo}
+                  alt="Launched Logo"
+                  className="h-28 sm:h-36 md:h-44 lg:h-52 w-auto drop-shadow-lg rounded-lg animate-fadeIn"
+                />
+              )}
             </div>
           </div>
 
@@ -271,8 +281,10 @@ function UserPage() {
             <h3 className="text-3xl sm:text-4xl md:text-5xl font-light text-green-600 mb-2">
               LAUNCH SUCCESSFUL
             </h3>
+            {/* Show launched logo on user side after full sequence */}
+          
             <p className="text-gray-600 font-light text-center max-w-md">
-              The product has been revealed on the big screen.
+              The product has been revealed.
             </p>
           </div>
         )}

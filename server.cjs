@@ -23,7 +23,8 @@ let launchState = {
   clickCount: 0,
   isLaunched: false,
   participants: [],
-  launchTime: null
+  launchTime: null,
+  revealComplete: false
 };
 
 // Enhanced logging
@@ -68,13 +69,18 @@ wss.on('connection', (ws) => {
           logState(`Click from ${data.userId.substring(0, 8)}`);
           broadcast(launchState);
         }
+      } else if (data.type === 'reveal_now') {
+        launchState.revealComplete = true;
+        logState('Reveal completed');
+        broadcast(launchState);
       } else if (data.type === 'reset') {
         // Reset the launch state
         launchState = {
           clickCount: 0,
           isLaunched: false,
           participants: [],
-          launchTime: null
+          launchTime: null,
+          revealComplete: false
         };
         logState('Launch reset');
         broadcast(launchState);

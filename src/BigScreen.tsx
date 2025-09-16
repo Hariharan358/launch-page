@@ -27,6 +27,11 @@ function BigScreen() {
   });
 
   const [showCelebration, setShowCelebration] = useState(false);
+  const [isCountdown, setIsCountdown] = useState(false);
+  const [countdown, setCountdown] = useState(10);
+  const [isVideo, setIsVideo] = useState(false);
+  const [sequenceStarted, setSequenceStarted] = useState(false);
+  const countdownAudioRef = useRef<HTMLAudioElement | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
   const connectionAttemptsRef = useRef(0);
 
@@ -81,6 +86,26 @@ function BigScreen() {
     }
   }, [showCelebration]);
 
+  // Handle countdown background music
+  useEffect(() => {
+    const audio = countdownAudioRef.current;
+    if (!audio) return;
+    if (isCountdown) {
+      // Try to play; some browsers may block without user gesture
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.then === 'function') {
+        playPromise.catch(() => {
+          // Autoplay blocked; ignore silently
+        });
+      }
+    } else {
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+      } catch {}
+    }
+  }, [isCountdown]);
+
   // WebSocket connection for big screen
   useEffect(() => {
     let websocket: WebSocket | null = null;
@@ -110,22 +135,28 @@ function BigScreen() {
       websocket.onopen = () => {
         connectionAttemptsRef.current = 0;
         console.log('✅ Big Screen connected to Render WebSocket server');
+        ;(window as any).__globalLaunchWS = websocket;
       };
 
       websocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setLaunchState(data);
 
-        if (data.isLaunched && !showCelebration) {
-          setShowCelebration(true);
-
-          // Trigger screen shake effect
-          setTimeout(() => {
-            document.body.style.animation = 'shake 0.5s ease-in-out';
-            setTimeout(() => {
-              document.body.style.animation = '';
-            }, 500);
-          }, 200);
+        if (data.isLaunched && !sequenceStarted) {
+          setSequenceStarted(true);
+          // Start 10s countdown, then play video, then show celebration logo
+          setIsCountdown(true);
+          setCountdown(10);
+          let remaining = 10;
+          const timer = setInterval(() => {
+            remaining -= 1;
+            setCountdown(remaining);
+            if (remaining <= 0) {
+              clearInterval(timer);
+              setIsCountdown(false);
+              setIsVideo(true);
+            }
+          }, 1000);
         }
       };
 
@@ -300,6 +331,64 @@ function BigScreen() {
           </div>
         )}
       </div>
+
+      {/* Countdown Overlay */}
+      {isCountdown && (
+        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-50">
+          {/* Background music during countdown */}
+          <audio ref={countdownAudioRef} src="/music.mp3" loop preload="auto" />
+          <div className="text-center px-6">
+            <div className="text-5xl md:text-7xl font-light text-gray-900 mb-3">Launching in</div>
+            <div className="text-7xl md:text-9xl font-light text-orange-600 animate-fadeIn">{countdown}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Intro Video Overlay */}
+      {isVideo && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+          <div className="w-full max-w-5xl px-4 text-center">
+            <video
+              className="w-full h-auto max-h-[80vh] rounded-xl shadow-2xl object-contain mx-auto"
+              autoPlay
+              muted
+              playsInline
+              preload="auto"
+              controls={false}
+              onEnded={() => {
+                setIsVideo(false);
+                setShowCelebration(true);
+                // notify server that reveal is complete so users can also show logo
+                try {
+                  const ws = (window as any).__globalLaunchWS as WebSocket | undefined;
+                  ws?.readyState === 1 && ws.send(JSON.stringify({ type: 'reveal_now' }));
+                } catch {}
+              }}
+              onError={() => {
+                setIsVideo(false);
+                setShowCelebration(true);
+                try {
+                  const ws = (window as any).__globalLaunchWS as WebSocket | undefined;
+                  ws?.readyState === 1 && ws.send(JSON.stringify({ type: 'reveal_now' }));
+                } catch {}
+              }}
+            >
+              {/* Multiple candidates: unencoded, URL-encoded, and generic fallback */}
+              <source src="/dark_bg (1).mp4" type="video/mp4" />
+              <source src="/dark_bg%281%29.mp4" type="video/mp4" />
+              <source src="/intro.mp4" type="video/mp4" />
+            </video>
+
+            {/* Skip button in case autoplay is blocked or file missing */}
+            <button
+              className="mt-4 px-4 py-2 text-sm bg-white/10 hover:bg-white/20 text-white rounded-lg transition"
+              onClick={() => { setIsVideo(false); setShowCelebration(true); }}
+            >
+              Skip Video
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Celebration Overlay — Elegant & Vibrant */}
 {showCelebration && (
