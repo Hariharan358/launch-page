@@ -178,7 +178,7 @@ function UserPage() {
             LAUNCH EVENT
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-xl mx-auto leading-relaxed font-light">
-            Join the exclusive launch. We need exactly <span className="font-light text-orange-600">3 participants</span> to simultaneously reveal our new product.
+            Join the exclusive launch. We need exactly <span className="font-light text-orange-600">3 participants</span> to simultaneously reveal our new mission.
           </p>
         </div>
 
