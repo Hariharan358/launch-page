@@ -160,7 +160,7 @@ function UserPage() {
               className="h-16 sm:h-20 md:h-24 w-auto drop-shadow-lg"
             />
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-gray-800 mb-2 sm:mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-regular text-gray-800 mb-2 sm:mb-4">
             LAUNCH EVENT
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-xl mx-auto leading-relaxed font-light">
@@ -264,7 +264,7 @@ function UserPage() {
           </div>
         ) : (
           <div className="mb-8 flex flex-col items-center">
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-light text-green-600 mb-2">
+            <h3 className="text-1xl sm:text-3xl md:text-4xl font-regular text-green-600 mb-2">
               LAUNCH SUCCESSFUL
             </h3>
             {/* Show launched logo on user side after full sequence */}
@@ -279,7 +279,7 @@ function UserPage() {
 
       {/* Celebration Overlay */}
       {showCelebration && (
-        <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-white/100 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="text-center relative z-10 px-6">
             <div className="flex justify-center mb-6">
               <img src="/casa.png" alt="Launched Logo" className="h-16 sm:h-20 md:h-24 w-auto drop-shadow-lg rounded-lg animate-fadeIn" />

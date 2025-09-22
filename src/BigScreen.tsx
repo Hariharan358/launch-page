@@ -142,21 +142,24 @@ function BigScreen() {
         const data = JSON.parse(event.data);
         setLaunchState(data);
 
+        // If launch is already complete and page is reloaded, play video sequence
         if (data.isLaunched && !sequenceStarted) {
           setSequenceStarted(true);
-          // Start 10s countdown, then play video, then show celebration logo
-          setIsCountdown(true);
-          setCountdown(10);
-          let remaining = 10;
-          const timer = setInterval(() => {
-            remaining -= 1;
-            setCountdown(remaining);
-            if (remaining <= 0) {
-              clearInterval(timer);
-              setIsCountdown(false);
-              setIsVideo(true);
-            }
-          }, 1000);
+          // If page is loaded and launch is already done, play video
+          if (!isCountdown && !isVideo && !showCelebration) {
+            setIsCountdown(true);
+            setCountdown(10);
+            let remaining = 10;
+            const timer = setInterval(() => {
+              remaining -= 1;
+              setCountdown(remaining);
+              if (remaining <= 0) {
+                clearInterval(timer);
+                setIsCountdown(false);
+                setIsVideo(true);
+              }
+            }, 1000);
+          }
         }
       };
 
@@ -189,7 +192,7 @@ function BigScreen() {
         websocket.close();
       }
     };
-  }, []);
+  }, [isCountdown, isVideo, showCelebration, sequenceStarted]);
 
   const progressPercentage = (launchState.clickCount / 20) * 100;
   const isNearLaunch = launchState.clickCount >= 18;
@@ -213,67 +216,50 @@ function BigScreen() {
 
         {/* Progress Circle - Elegant Orange Theme */}
         <div className="mb-8">
-          <div className={`relative w-64 h-64 mx-auto mb-8 transition-all duration-500 ${isNearLaunch ? 'scale-105' : 'scale-100'}`}>
-
-            {/* Outer subtle ring */}
-            {/* <div className="absolute inset-0 rounded-full border-2 border-gray-200"></div> */}
-
-            {/* Progress Ring */}
-            {/* <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="42"
-                stroke="#f3f4f6"
-                strokeWidth="4"
-                fill="none"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="42"
-                stroke={launchState.isLaunched ? "#10B981" : isNearLaunch ? "#F7941A" : "#D36B00"}
-                strokeWidth="6"
-                fill="none"
-                strokeDasharray={`${2 * Math.PI * 42}`}
-                strokeDashoffset={`${2 * Math.PI * 42 * (1 - progressPercentage / 100)}`}
-                className="transition-all duration-1000 ease-out"
-                strokeLinecap="round"
-              />
-            </svg> */}
-
-            {/* Center Status Text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              {!launchState.isLaunched ? (
-                <>
-                  <div className={`text-3xl font-light transition-all duration-500 ${isNearLaunch ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-700'}`}>
-                    {isNearLaunch ? "READY TO REVEAL" : "WAITING"}
-                  </div>
-                  <div className="text-sm text-gray-500 mt-2 font-light">
-                    {launchState.clickCount} of 20 participants
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* <div className="text-green-600 text-3xl font-light animate-pulse mb-4">
-                    LAUNCHED
-                  </div> */}
-
-                  {/* 👇 Revealed Product Image inside circle */}
-                  <img
-                    src={launch}
-                    alt="Revealed Product"
-                    className="h-60 md:h-60 mb-1 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
+            <div className="mb-8 flex flex-col items-center justify-center">
+              <div className="relative w-64 h-64 flex items-center justify-center mb-4">
+                <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 100">
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke="#f3f4f6"
+                    strokeWidth="4"
+                    fill="none"
                   />
-
-                    {/* <div className="text-xs text-gray-500 font-light">
-                      Product revealed!
-                    </div> */}
-                </>
-              )}
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    stroke={launchState.isLaunched ? "#10B981" : isNearLaunch ? "#F7941A" : "#D36B00"}
+                    strokeWidth="6"
+                    fill="none"
+                    strokeDasharray={`${2 * Math.PI * 42}`}
+                    strokeDashoffset={`${2 * Math.PI * 42 * (1 - progressPercentage / 100)}`}
+                    className="transition-all duration-1000 ease-out"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  {!launchState.isLaunched ? (
+                    <>
+                      <div className={`text-xl font-light transition-all duration-500 ${isNearLaunch ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-700'}`}> 
+                        {isNearLaunch ? "READY TO REVEAL" : "WAITING"}
+                      </div>
+                      <div className="text-sm text-gray-500 mt-2 font-light">
+                        {launchState.clickCount} of 20 participants
+                      </div>
+                    </>
+                  ) : (
+                    <img
+                      src={launch}
+                      alt="Revealed Product"
+                      className="h-40 md:h-48 mb-1 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
+                    />
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-
           {/* Progress Bar */}
           {/* <div className="w-full max-w-md mx-auto bg-gray-100 rounded-full h-2 overflow-hidden relative">
             <div
@@ -291,8 +277,10 @@ function BigScreen() {
           {/* Status Message */}
           <div className="mt-3 text-gray-600 text-base font-light">
             {!launchState.isLaunched ? (
-              isNearLaunch ? (
+              launchState.clickCount >= 19 ? (
                 <span className="font-light text-orange-600">Launch sequence activated — one more to go</span>
+              ) : launchState.clickCount >= 15 ? (
+                <span className="font-light text-orange-600">Almost there! Only {20 - launchState.clickCount} left</span>
               ) : (
                 <span>Waiting for participants to join the launch</span>
               )
@@ -320,19 +308,19 @@ function BigScreen() {
         {/* Waiting Message — only shown before launch */}
         {!launchState.isLaunched && (
           <div className="mt-12">
-            <div className="text-2xl font-light text-gray-700 mb-2">
+            {/* <div className="text-2xl font-light text-gray-700 mb-2">
               Waiting for participants
-            </div>
-            <p className="text-gray-500 font-light">
+            </div> */}
+            <h4 className="text-gray-500 font-light">
               The product will be revealed when 20 people click the launch button
-            </p>
+            </h4>
           </div>
         )}
       </div>
 
       {/* Countdown Overlay */}
       {isCountdown && (
-        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gradient-to-t from-orange-200/95 via-orange-00 to-white/100 backdrop-blur-sm flex items-center justify-center z-50">
           {/* Background music during countdown */}
           <audio ref={countdownAudioRef} src="/music.mp3" loop preload="auto" />
           <div className="text-center px-6">
@@ -390,7 +378,7 @@ function BigScreen() {
 
       {/* Celebration Overlay — Elegant & Vibrant */}
 {showCelebration && (
-  <div className="fixed inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className="fixed inset-0 bg-gradient-to-t from-orange-200/95 via-orange-00 to-white backdrop-blur-sm flex items-center justify-center z-50">
 
     {/* Confetti Poppers */}
     {[...Array(50)].map((_, i) => (
