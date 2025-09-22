@@ -41,7 +41,7 @@ function Home() {
         {/* Description — Clean & Professional */}
         <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed font-light">
           Be part of something exciting. Join the event and witness the reveal with just{" "}
-          <span className="font-light text-orange-600">3 participants</span>.
+          <span className="font-light text-orange-600">20 participants</span>.
         </p>
 
         {/* CTA Button — Vibrant Orange Popper Style */}

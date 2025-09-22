@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Rocket, RotateCcw, Star, Trophy } from 'lucide-react';
+import { Rocket, Star, Trophy } from 'lucide-react';
 import launchLogo from "./logo/launch.png";
 import casa from "./logo/casa.png";
 
@@ -99,11 +99,6 @@ function UserPage() {
           setPulseAnimation(true);
 
           setTimeout(() => {
-            document.body.style.animation = 'shake 0.5s ease-in-out';
-            setTimeout(() => document.body.style.animation = '', 500);
-          }, 100);
-
-          setTimeout(() => {
             setShowCelebration(false);
             setPulseAnimation(false);
           }, 8000);
@@ -148,17 +143,8 @@ function UserPage() {
     ws.send(JSON.stringify({ type: 'launch_click', userId }));
   };
 
-  const handleReset = () => {
-    if (!ws) return;
-    setHasClicked(false);
-    setShowCelebration(false);
-    setPulseAnimation(false);
-    setParticles([]);
-    ws.send(JSON.stringify({ type: 'reset' }));
-  };
-
-  const progressPercentage = (launchState.clickCount / 3) * 100;
-  const isNearLaunch = launchState.clickCount >= 2;
+  const progressPercentage = (launchState.clickCount / 20) * 100;
+  const isNearLaunch = launchState.clickCount >= 18;
 
   return (
     <div className="min-h-screen bg-white text-gray-800 flex items-center justify-center p-4 sm:p-6 md:p-6 relative overflow-hidden font-sans">
@@ -178,7 +164,7 @@ function UserPage() {
             LAUNCH EVENT
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-xl mx-auto leading-relaxed font-light">
-            Join the exclusive launch. We need exactly <span className="font-light text-orange-600">3 participants</span> to simultaneously reveal our new mission.
+            Join the exclusive launch. We need exactly <span className="font-light text-orange-600">20 participants</span> to simultaneously reveal our new mission.
           </p>
         </div>
 
@@ -187,16 +173,16 @@ function UserPage() {
           <div className={`relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 mx-auto mb-6 transition-all duration-500 ${pulseAnimation ? 'scale-105' : 'scale-100'} hover:scale-105`}>
             <div className="absolute inset-0 rounded-full border-2 border-gray-200"></div>
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" stroke="#f3f4f6" strokeWidth="3" fill="none" />
+              <circle cx="50" cy="50" r="48" stroke="#f3f4f6" strokeWidth="3" fill="none" />
               <circle
                 cx="50"
                 cy="50"
-                r="42"
+                r="48"
                 stroke={launchState.isLaunched ? "#10B981" : isNearLaunch ? "#F7941A" : "#D36B00"}
-                strokeWidth="5"
+                strokeWidth="4"
                 fill="none"
-                strokeDasharray={`${2 * Math.PI * 42}`}
-                strokeDashoffset={`${2 * Math.PI * 42 * (1 - progressPercentage / 100)}`}
+                strokeDasharray={`${2 * Math.PI * 48}`}
+                strokeDashoffset={`${2 * Math.PI * 48 * (1 - progressPercentage / 100)}`}
                 className="transition-all duration-1000 ease-out"
                 strokeLinecap="round"
               />
@@ -207,7 +193,7 @@ function UserPage() {
                   <div className={`text-2xl sm:text-3xl md:text-4xl font-light transition-all duration-500 ${pulseAnimation ? 'text-orange-600 scale-110 animate-pulse' : 'text-gray-800'}`}>
                     {launchState.clickCount}
                   </div>
-                  <div className="text-xs sm:text-sm md:text-sm text-gray-500 mt-1 font-light">/ 3</div>
+                  <div className="text-xs sm:text-sm md:text-sm text-gray-500 mt-1 font-light">/ 20</div>
                   {isNearLaunch && (
                     <div className="text-orange-600 text-xs sm:text-sm md:text-sm font-light mt-2 animate-pulse">
                       Almost there
@@ -234,8 +220,8 @@ function UserPage() {
           </div>
 
           <div className="mt-4 text-gray-600 text-sm font-light">
-            {3 - launchState.clickCount > 0 
-              ? `${3 - launchState.clickCount} more needed to unlock`
+            {20 - launchState.clickCount > 0 
+              ? `${20 - launchState.clickCount} more needed to unlock`
               : "Launch sequence activated"
             }
           </div>
@@ -283,33 +269,26 @@ function UserPage() {
             </h3>
             {/* Show launched logo on user side after full sequence */}
           
-            <p className="text-gray-600 font-light text-center max-w-md">
+            {/* <p className="text-gray-600 font-light text-center max-w-md">
               The product has been revealed.
-            </p>
+            </p> */}
           </div>
         )}
 
-        {/* Reset */}
-        <div>
-          <button
-            onClick={handleReset}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-300 hover:scale-105 border border-gray-200 font-light"
-          >
-            <RotateCcw size={16} />
-            <span>Reset Launch</span>
-          </button>
-        </div>
       </div>
 
       {/* Celebration Overlay */}
       {showCelebration && (
         <div className="fixed inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="text-center relative z-10 px-6">
-            <div className="text-6xl sm:text-7xl md:text-8xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-6 animate-fadeIn drop-shadow-lg">
-              LOGO
+            <div className="flex justify-center mb-6">
+              <img src="/casa.png" alt="Launched Logo" className="h-16 sm:h-20 md:h-24 w-auto drop-shadow-lg rounded-lg animate-fadeIn" />
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-900 mb-4">
-              LAUNCHED
+            {/* <div className="text-6xl sm:text-7xl md:text-8xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-6 animate-fadeIn drop-shadow-lg">
+              LOGO
+            </div> */}
+            <h2 className="text-md sm:text-xl md:text-5xl font-light text-gray-900 mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700">LAUNCHED</span>
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto font-light">
               The product has been revealed on the big screen.
@@ -339,11 +318,6 @@ function UserPage() {
         .animate-confetti { animation: confetti 3s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fadeIn { animation: fadeIn 0.6s ease-out forwards; }
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-          20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
       `}</style>
     </div>
   );

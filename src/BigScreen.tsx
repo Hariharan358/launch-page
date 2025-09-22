@@ -202,9 +202,7 @@ function BigScreen() {
 
         {/* Logo Placeholder */}
         <div className="mb-8">
-          <h1 className="text-6xl md:text-7xl font-light text-gray-900 tracking-tight mb-3 drop-shadow-lg">
-            LOGO
-          </h1>
+          <img src="/casa.png" alt="Logo" className="h-16 mx-auto mb-2" />
           <h2 className="text-3xl md:text-4xl font-light text-gray-800 mb-2">
             LAUNCH EVENT
           </h2>
@@ -218,10 +216,10 @@ function BigScreen() {
           <div className={`relative w-64 h-64 mx-auto mb-8 transition-all duration-500 ${isNearLaunch ? 'scale-105' : 'scale-100'}`}>
 
             {/* Outer subtle ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-gray-200"></div>
+            {/* <div className="absolute inset-0 rounded-full border-2 border-gray-200"></div> */}
 
             {/* Progress Ring */}
-            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+            {/* <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
                 cy="50"
@@ -242,7 +240,7 @@ function BigScreen() {
                 className="transition-all duration-1000 ease-out"
                 strokeLinecap="round"
               />
-            </svg>
+            </svg> */}
 
             {/* Center Status Text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -257,27 +255,27 @@ function BigScreen() {
                 </>
               ) : (
                 <>
-                  <div className="text-green-600 text-3xl font-light animate-pulse mb-4">
+                  {/* <div className="text-green-600 text-3xl font-light animate-pulse mb-4">
                     LAUNCHED
-                  </div>
+                  </div> */}
 
                   {/* 👇 Revealed Product Image inside circle */}
                   <img
                     src={launch}
                     alt="Revealed Product"
-                    className="h-24 md:h-28 mb-1 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
+                    className="h-60 md:h-60 mb-1 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
                   />
 
-                  <div className="text-xs text-gray-500 font-light">
-                    Product revealed!
-                  </div>
+                    {/* <div className="text-xs text-gray-500 font-light">
+                      Product revealed!
+                    </div> */}
                 </>
               )}
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full max-w-md mx-auto bg-gray-100 rounded-full h-2 overflow-hidden relative">
+          {/* <div className="w-full max-w-md mx-auto bg-gray-100 rounded-full h-2 overflow-hidden relative">
             <div
               className={`h-full rounded-full transition-all duration-1000 ease-out ${
                 launchState.isLaunched
@@ -288,7 +286,7 @@ function BigScreen() {
               }`}
               style={{ width: `${progressPercentage}%` }}
             ></div>
-          </div>
+          </div> */}
 
           {/* Status Message */}
           <div className="mt-3 text-gray-600 text-base font-light">
@@ -305,7 +303,7 @@ function BigScreen() {
         </div>
 
         {/* 👇 Large Product Reveal Below Progress Circle */}
-        {launchState.isLaunched && (
+        {/* {launchState.isLaunched && (
           <div className="mb-8 flex flex-col items-center justify-center animate-fadeIn px-4">
             <img
               src={launch}
@@ -316,7 +314,7 @@ function BigScreen() {
               The product has been successfully revealed to the world.
             </p>
           </div>
-        )}
+        )} */}
 
 
         {/* Waiting Message — only shown before launch */}
@@ -351,7 +349,7 @@ function BigScreen() {
             <video
               className="w-full h-auto max-h-[80vh] rounded-xl shadow-2xl object-contain mx-auto"
               autoPlay
-              muted
+              
               playsInline
               preload="auto"
               controls={false}
@@ -374,17 +372,17 @@ function BigScreen() {
               }}
             >
               {/* Cloudinary video source */}
-              <source src="https://res.cloudinary.com/down1eunj/video/upload/v1758519402/uioqkmukli7qkx9mldk2.mp4" type="video/mp4" />
+              <source src="/intro.mp4" type="video/mp4" />
               {/* Fallback sources */}
               <source src="/intro.mp4" type="video/mp4" />
             </video>
 
             {/* Skip button in case autoplay is blocked or file missing */}
             <button
-              className="mt-4 px-4 py-2 text-sm bg-white/10 hover:bg-white/20 text-white rounded-lg transition"
+              className="mt-4 px-4 py-2 text-sm bg-white/10 hover:bg-white/20 text-white rounded-3xl transition"
               onClick={() => { setIsVideo(false); setShowCelebration(true); }}
             >
-              Skip Video
+              X
             </button>
           </div>
         </div>
@@ -411,13 +409,7 @@ function BigScreen() {
 
     {/* Celebration Content */}
     <div className="text-center relative z-10 px-4 max-w-3xl w-full max-h-[90vh] overflow-hidden">
-      <div className="text-7xl md:text-8xl font-light text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 mb-6 animate-fadeIn drop-shadow-lg">
-        LOGO
-      </div>
-
-      <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-5">
-        LAUNCHED
-      </h2>
+      
 
       {/* ✅ FIXED: Added `block` to make mx-auto work */}
       <div className="flex justify-center mb-5">
@@ -428,9 +420,7 @@ function BigScreen() {
         />
       </div>
 
-      <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto font-light">
-        The product has been revealed.
-      </p>
+    
 
       <button
         onClick={() => setShowCelebration(false)}
@@ -476,11 +466,6 @@ function BigScreen() {
         }
         .animate-fadeIn {
           animation: fadeIn 0.8s ease-out forwards;
-        }
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-          20%, 40%, 60%, 80% { transform: translateX(2px); }
         }
       `}</style>
     </div>

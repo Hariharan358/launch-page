@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import UserPage from './UserPage';
 import BigScreen from './BigScreen';
+import ResetPage from './ResetPage';
 import logo from './logo/casa.png';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'user' | 'bigscreen'>('user');
+  const [currentPage, setCurrentPage] = useState<'user' | 'bigscreen' | 'reset'>('user');
   const [transitionKey, setTransitionKey] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -13,6 +14,8 @@ function App() {
     const path = window.location.pathname;
     if (path === '/bigscreen' || path === '/bigscreen/') {
       setCurrentPage('bigscreen');
+    } else if (path === '/reset' || path === '/reset/') {
+      setCurrentPage('reset');
     } else {
       setCurrentPage('user');
     }
@@ -24,6 +27,8 @@ function App() {
       const path = window.location.pathname;
       if (path === '/bigscreen' || path === '/bigscreen/') {
         setCurrentPage('bigscreen');
+      } else if (path === '/reset' || path === '/reset/') {
+        setCurrentPage('reset');
       } else {
         setCurrentPage('user');
       }
@@ -46,6 +51,13 @@ function App() {
     setCurrentPage('bigscreen');
     setTransitionKey(prev => prev + 1);
     window.history.pushState({}, '', '/bigscreen');
+    setIsMenuOpen(false);
+  };
+
+  const navigateToReset = () => {
+    setCurrentPage('reset');
+    setTransitionKey(prev => prev + 1);
+    window.history.pushState({}, '', '/reset');
     setIsMenuOpen(false);
   };
 
@@ -103,6 +115,19 @@ function App() {
             >
               Big Screen
             </button>
+            
+            <button
+              onClick={navigateToReset}
+              className={`
+                w-full text-left px-4 py-3 rounded-xl font-light text-sm transition-all duration-300
+                ${currentPage === 'reset'
+                  ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }
+              `}
+            >
+              Reset Launch
+            </button>
           </div>
         </div>
       </nav>
@@ -113,7 +138,9 @@ function App() {
           key={transitionKey} // ensures re-render triggers animation
           className="animate-fadeSlide"
         >
-          {currentPage === 'user' ? <UserPage /> : <BigScreen />}
+          {currentPage === 'user' ? <UserPage /> : 
+           currentPage === 'bigscreen' ? <BigScreen /> : 
+           <ResetPage />}
         </div>
       </div>
 

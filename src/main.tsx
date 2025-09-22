@@ -5,6 +5,7 @@ import App from "./App";   // Launch Page
 import Home from "./Home"; // New Home Page
 import "./index.css";
 import BigScreen from "./BigScreen";
+import ResetPage from "./ResetPage";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -13,6 +14,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/" element={<Home />} />
         <Route path="/screen" element={<BigScreen />} />
         <Route path="/launch" element={<App />} />
+        <Route path="/reset" element={<ResetPage />} />
       </Routes>
     </Router>
   </React.StrictMode>
