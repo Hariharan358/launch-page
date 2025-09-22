@@ -191,8 +191,8 @@ function BigScreen() {
     };
   }, []);
 
-  const progressPercentage = (launchState.clickCount / 3) * 100;
-  const isNearLaunch = launchState.clickCount >= 2;
+  const progressPercentage = (launchState.clickCount / 20) * 100;
+  const isNearLaunch = launchState.clickCount >= 18;
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans relative overflow-hidden">
@@ -209,7 +209,7 @@ function BigScreen() {
             LAUNCH EVENT
           </h2>
           <p className="text-base md:text-lg text-gray-600 max-w-lg mx-auto leading-relaxed font-light">
-            Watch as we reveal our new product when <span className="font-light text-orange-600">3 participants</span> join the launch.
+            Watch as we reveal our new product when <span className="font-light text-orange-600">20 participants</span> join the launch.
           </p>
         </div>
 
@@ -252,7 +252,7 @@ function BigScreen() {
                     {isNearLaunch ? "READY TO REVEAL" : "WAITING"}
                   </div>
                   <div className="text-sm text-gray-500 mt-2 font-light">
-                    {launchState.clickCount} of 3 participants
+                    {launchState.clickCount} of 20 participants
                   </div>
                 </>
               ) : (
@@ -326,7 +326,7 @@ function BigScreen() {
               Waiting for participants
             </div>
             <p className="text-gray-500 font-light">
-              The product will be revealed when 3 people click the launch button
+              The product will be revealed when 20 people click the launch button
             </p>
           </div>
         )}
@@ -373,10 +373,10 @@ function BigScreen() {
                 } catch {}
               }}
             >
-              {/* Multiple candidates: unencoded, URL-encoded, and generic fallback */}
-              <source src="/dark_bg (1).mp4" type="video/mp4" />
-              <source src="/dark_bg%281%29.mp4" type="video/mp4" />
-              <source src="/intro.mp4" type="video/mp4" />
+              {/* Cloudinary video source */}
+              <source src="https://res.cloudinary.com/down1eunj/video/upload/v1758519402/uioqkmukli7qkx9mldk2.mp4" type="video/mp4" />
+              {/* Fallback sources */}
+              
             </video>
 
             {/* Skip button in case autoplay is blocked or file missing */}
