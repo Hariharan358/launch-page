@@ -360,7 +360,7 @@ function BigScreen() {
               }}
             >
               {/* Cloudinary video source */}
-              <source src="https://res.cloudinary.com/down1eunj/video/upload/v1758519402/uioqkmukli7qkx9mldk2.mp4" type="video/mp4" />
+              <source src="/intro.mp4" type="video/mp4" />
               {/* Fallback sources */}
               <source src="/intro.mp4" type="video/mp4" />
             </video>
