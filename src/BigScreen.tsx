@@ -32,8 +32,26 @@ function BigScreen() {
   const [isVideo, setIsVideo] = useState(false);
   const [sequenceStarted, setSequenceStarted] = useState(false);
   const countdownAudioRef = useRef<HTMLAudioElement | null>(null);
+  const waitingAudioRef = useRef<HTMLAudioElement | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
   const connectionAttemptsRef = useRef(0);
+  // Handle waiting background music (before launch)
+  useEffect(() => {
+    const audio = waitingAudioRef.current;
+    if (!audio) return;
+    // Play music only when waiting for launch (not launched, not in countdown, not video, not celebration)
+    if (!launchState.isLaunched && !isCountdown && !isVideo && !showCelebration) {
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.then === 'function') {
+        playPromise.catch(() => {});
+      }
+    } else {
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+      } catch {}
+    }
+  }, [launchState.isLaunched, isCountdown, isVideo, showCelebration]);
 
   // Enhanced particle system for big screen
   useEffect(() => {
@@ -200,6 +218,15 @@ function BigScreen() {
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans relative overflow-hidden">
 
+      {/* Waiting background music (looped) */}
+      <audio
+        ref={waitingAudioRef}
+        src="/waiting-audio.mp3"
+        loop
+        preload="auto"
+        style={{ display: 'none' }}
+      />
+
       {/* Main Content */}
       <div className="max-w-3xl mx-auto text-center relative z-10 pt-16 pb-10 px-4">
 
@@ -210,7 +237,7 @@ function BigScreen() {
             LAUNCH EVENT
           </h2>
           <p className="text-base md:text-lg text-gray-600 max-w-lg mx-auto leading-relaxed font-light">
-            Watch as we reveal our new product when <span className="font-light text-orange-600">20 participants</span> join the launch.
+            Watch as we reveal our new mission when <span className="font-light text-orange-600">20 participants</span> join the launch.
           </p>
         </div>
 
@@ -312,7 +339,7 @@ function BigScreen() {
               Waiting for participants
             </div> */}
             <h4 className="text-gray-500 font-light">
-              The product will be revealed when 20 people click the launch button
+              The mission will be revealed when 20 people click the launch button
             </h4>
           </div>
         )}
