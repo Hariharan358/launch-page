@@ -35,23 +35,53 @@ function BigScreen() {
   const waitingAudioRef = useRef<HTMLAudioElement | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
   const connectionAttemptsRef = useRef(0);
-  // Handle waiting background music (before launch)
+  // Waiting audio fallback logic
+  const [waitingAudioBlocked, setWaitingAudioBlocked] = useState(false);
+  const [waitingAudioPlaying, setWaitingAudioPlaying] = useState(false);
+
   useEffect(() => {
     const audio = waitingAudioRef.current;
     if (!audio) return;
-    // Play music only when waiting for launch (not launched, not in countdown, not video, not celebration)
     if (!launchState.isLaunched && !isCountdown && !isVideo && !showCelebration) {
       const playPromise = audio.play();
       if (playPromise && typeof playPromise.then === 'function') {
-        playPromise.catch(() => {});
+        playPromise
+          .then(() => {
+            setWaitingAudioBlocked(false);
+            setWaitingAudioPlaying(true);
+          })
+          .catch(() => {
+            setWaitingAudioBlocked(true);
+            setWaitingAudioPlaying(false);
+          });
+      } else {
+        setWaitingAudioPlaying(true);
+        setWaitingAudioBlocked(false);
       }
     } else {
       try {
         audio.pause();
         audio.currentTime = 0;
+        setWaitingAudioPlaying(false);
       } catch {}
     }
   }, [launchState.isLaunched, isCountdown, isVideo, showCelebration]);
+
+  // Manual play handler for blocked autoplay
+  const handlePlayWaitingAudio = () => {
+    const audio = waitingAudioRef.current;
+    if (audio) {
+      audio.play()
+        .then(() => {
+          setWaitingAudioBlocked(false);
+          setWaitingAudioPlaying(true);
+        })
+        .catch(() => {
+          setWaitingAudioBlocked(true);
+          setWaitingAudioPlaying(false);
+        });
+    }
+  };
 
   // Enhanced particle system for big screen
   useEffect(() => {
@@ -226,6 +256,7 @@ function BigScreen() {
         preload="auto"
         style={{ display: 'none' }}
       />
+      {/* Fallback play button is now below status message in main content */}
 
       {/* Main Content */}
       <div className="max-w-3xl mx-auto text-center relative z-10 pt-16 pb-10 px-4">
@@ -233,7 +264,15 @@ function BigScreen() {
         {/* Logo Placeholder */}
         <div className="mb-8">
           <img src="/casa.png" alt="Logo" className="h-16 mx-auto mb-2" />
-          <h2 className="text-3xl md:text-4xl font-light text-gray-800 mb-2">
+          <h2
+            className={`text-3xl md:text-4xl font-bold mb-2 transition-colors duration-200 ${!isCountdown && !isVideo && !showCelebration && waitingAudioBlocked ? 'text-gray-500 cursor-pointer' : waitingAudioPlaying ? 'text-orange-600' : 'text-gray-800'}`}
+            onClick={() => {
+              if (!isCountdown && !isVideo && !showCelebration && waitingAudioBlocked) {
+                handlePlayWaitingAudio();
+              }
+            }}
+            title={waitingAudioBlocked ? 'Click to play waiting music' : undefined}
+          >
             LAUNCH EVENT
           </h2>
           <p className="text-base md:text-lg text-gray-600 max-w-lg mx-auto leading-relaxed font-light">
@@ -301,16 +340,19 @@ function BigScreen() {
             ></div>
           </div> */}
 
-          {/* Status Message */}
-          <div className="mt-3 text-gray-600 text-base font-light">
+          {/* Status Message + Waiting Music Button */}
+          <div className="mt-3 text-gray-600 text-base font-light flex flex-col items-center">
             {!launchState.isLaunched ? (
-              launchState.clickCount >= 19 ? (
-                <span className="font-light text-orange-600">Launch sequence activated — one more to go</span>
-              ) : launchState.clickCount >= 15 ? (
-                <span className="font-light text-orange-600">Almost there! Only {20 - launchState.clickCount} left</span>
-              ) : (
-                <span>Waiting for participants to join the launch</span>
-              )
+              <>
+                {launchState.clickCount >= 19 ? (
+                  <span className="font-light text-orange-600">Launch sequence activated — one more to go</span>
+                ) : launchState.clickCount >= 15 ? (
+                  <span className="font-light text-orange-600">Almost there! Only {20 - launchState.clickCount} left</span>
+                ) : (
+                  <span>Waiting for participants to join the launch</span>
+                )}
+                {/* Play music option is now in the heading above */}
+              </>
             ) : (
               <span className="font-light text-green-600">Mission accomplished</span>
             )}

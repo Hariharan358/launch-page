@@ -291,7 +291,7 @@ function UserPage() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700">LAUNCHED</span>
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto font-light">
-              The product has been revealed on the big screen.
+              The Mission has been revealed on the big screen.
             </p>
             <button
               onClick={() => setShowCelebration(false)}
