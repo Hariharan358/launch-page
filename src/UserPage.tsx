@@ -73,7 +73,7 @@ function UserPage() {
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsHost = window.location.hostname;
       const isProduction = wsHost !== 'localhost' && wsHost !== '127.0.0.1';
-      const wsUrl = isProduction ? 'wss://launch-page-k7rh.onrender.com' : `${wsProtocol}//${wsHost}:3001`;
+      const wsUrl = isProduction ? 'wss://launch-page-sonn.onrender.com' : `${wsProtocol}//${wsHost}:10000`;
 
       console.log('🔌 Connecting to WebSocket:', wsUrl);
       websocket = new WebSocket(wsUrl);
@@ -178,7 +178,7 @@ function UserPage() {
                 cx="50"
                 cy="50"
                 r="48"
-                stroke={launchState.isLaunched ? "#10B981" : isNearLaunch ? "#F7941A" : "#D36B00"}
+                stroke={launchState.isLaunched ? "#F59E0B" : isNearLaunch ? "#F7941A" : "#D36B00"}
                 strokeWidth="4"
                 fill="none"
                 strokeDasharray={`${2 * Math.PI * 48}`}
@@ -213,7 +213,7 @@ function UserPage() {
           <div className="w-full max-w-lg mx-auto bg-gray-100 rounded-full h-2.5 overflow-hidden relative">
             <div 
               className={`h-full rounded-full transition-all duration-1000 ease-out ${
-                launchState.isLaunched ? 'bg-green-500' : isNearLaunch ? 'bg-orange-500' : 'bg-gray-400'
+                launchState.isLaunched ? 'bg-amber-500' : isNearLaunch ? 'bg-orange-500' : 'bg-gray-400'
               }`}
               style={{ width: `${progressPercentage}%` }}
             ></div>
@@ -235,7 +235,7 @@ function UserPage() {
               disabled={hasClicked || !isConnected}
               className={`relative px-10 py-5 rounded-xl font-light text-lg transition-all duration-300 transform
                 ${hasClicked 
-                  ? 'bg-green-600 text-white cursor-default scale-100 shadow-lg' 
+                  ? 'bg-amber-600 text-white cursor-default scale-100 shadow-lg' 
                   : isConnected
                     ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:scale-105 hover:shadow-lg hover:shadow-orange-300 active:scale-95' 
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -264,7 +264,7 @@ function UserPage() {
           </div>
         ) : (
           <div className="mb-8 flex flex-col items-center">
-            <h3 className="text-1xl sm:text-3xl md:text-4xl font-regular text-green-600 mb-2">
+            <h3 className="text-1xl sm:text-3xl md:text-4xl font-regular text-amber-600 mb-2">
               LAUNCH SUCCESSFUL
             </h3>
             {/* Show launched logo on user side after full sequence */}
@@ -291,7 +291,7 @@ function UserPage() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700">LAUNCHED</span>
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto font-light">
-              The product has been revealed on the big screen.
+              The mission has been revealed on the big screen.
             </p>
             <button
               onClick={() => setShowCelebration(false)}

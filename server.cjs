@@ -12,11 +12,11 @@ const wss = new WebSocket.Server({
   perMessageDeflate: false
 });
 
-// Start server on port 3001 for local development
-const PORT = process.env.PORT || 3001;
+// Start server on port 10000 for local development
+const PORT = process.env.PORT || 10000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 WebSocket server running on port ${PORT}`);
-  console.log(`🌐 Accessible at: ws://localhost:${PORT} (local) or wss://launch-page-production.up.railway.app (production)`);
+  console.log(`🌐 Accessible at: ws://localhost:${PORT} (local) or wss://launch-page-sonn.onrender.com (production)`);
 });
 
 let launchState = {
@@ -99,7 +99,7 @@ wss.on('connection', (ws) => {
   });
 });
 
-console.log('🚀 Enhanced WebSocket server running on port 3001');
+console.log('🚀 Enhanced WebSocket server running on port 10000');
 console.log('📊 Initial launch state:', launchState);
 
 // Periodic status logging

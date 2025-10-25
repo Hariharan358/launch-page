@@ -123,10 +123,10 @@ function BigScreen() {
 
       let wsUrl;
       if (isProduction) {
-        wsUrl = 'wss://launch-page-k7rh.onrender.com';
+        wsUrl = 'wss://launch-page-sonn.onrender.com';
         console.log('Big Screen: Connecting to Render WebSocket backend');
       } else {
-        wsUrl = `${wsProtocol}//${wsHost}:3001`;
+        wsUrl = `${wsProtocol}//${wsHost}:10000`;
       }
 
       console.log('🔌 Big Screen connecting to:', wsUrl);
@@ -210,7 +210,7 @@ function BigScreen() {
             LAUNCH EVENT
           </h2>
           <p className="text-base md:text-lg text-gray-600 max-w-lg mx-auto leading-relaxed font-light">
-            Watch as we reveal our new product when <span className="font-light text-orange-600">20 participants</span> join the launch.
+            Watch as we reveal our mission when <span className="font-light text-orange-600">20 participants</span> join the launch.
           </p>
         </div>
 
@@ -231,7 +231,7 @@ function BigScreen() {
                     cx="50"
                     cy="50"
                     r="42"
-                    stroke={launchState.isLaunched ? "#10B981" : isNearLaunch ? "#F7941A" : "#D36B00"}
+                    stroke={launchState.isLaunched ? "#F59E0B" : isNearLaunch ? "#F7941A" : "#D36B00"}
                     strokeWidth="6"
                     fill="none"
                     strokeDasharray={`${2 * Math.PI * 42}`}
@@ -253,7 +253,7 @@ function BigScreen() {
                   ) : (
                     <img
                       src={launch}
-                      alt="Revealed Product"
+                      alt="Revealed Mission"
                       className="h-40 md:h-48 mb-1 drop-shadow-sm rounded-lg transition-all duration-500 animate-fadeIn"
                     />
                   )}
@@ -285,7 +285,7 @@ function BigScreen() {
                 <span>Waiting for participants to join the launch</span>
               )
             ) : (
-              <span className="font-light text-green-600">Mission accomplished</span>
+              <span className="font-light text-amber-600">Mission accomplished</span>
             )}
           </div>
         </div>
@@ -312,7 +312,7 @@ function BigScreen() {
               Waiting for participants
             </div> */}
             <h4 className="text-gray-500 font-light">
-              The product will be revealed when 20 people click the launch button
+              The mission will be revealed when 20 people click the launch button
             </h4>
           </div>
         )}
@@ -403,7 +403,7 @@ function BigScreen() {
       <div className="flex justify-center mb-5">
         <img
           src={launch}
-          alt="Revealed Product"
+          alt="Revealed Mission"
           className="w-72 sm:w-80 md:w-[22rem] lg:w-[26rem] xl:w-[30rem] h-auto drop-shadow-lg rounded-lg transition-all duration-500 animate-fadeIn"
         />
       </div>
