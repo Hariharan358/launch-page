@@ -31,7 +31,6 @@ function BigScreen() {
   const [countdown, setCountdown] = useState(10);
   const [isVideo, setIsVideo] = useState(false);
   const [sequenceStarted, setSequenceStarted] = useState(false);
-  const countdownAudioRef = useRef<HTMLAudioElement | null>(null);
   const waitingAudioRef = useRef<HTMLAudioElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
@@ -135,69 +134,11 @@ function BigScreen() {
     }
   }, [showCelebration]);
 
-  // Handle countdown background music
-  useEffect(() => {
-    if (isCountdown) {
-      console.log('🎵 Countdown started, attempting to play music...');
-      // Give the audio element time to mount
-      const attemptPlayAudio = () => {
-        const audio = countdownAudioRef.current;
-        if (!audio) {
-          console.log('⏳ Audio element not ready yet, retrying...');
-          setTimeout(attemptPlayAudio, 50);
-          return;
-        }
-        
-        console.log('🎵 Attempting to play countdown music...');
-        audio.currentTime = 0;
-        
-        // Add a one-time click listener to start audio if blocked
-        const startAudioOnClick = () => {
-          audio.play()
-            .then(() => {
-              console.log('✅ Countdown music playing after user interaction');
-              document.removeEventListener('click', startAudioOnClick);
-            })
-            .catch((err) => console.log('Audio still blocked:', err));
-        };
-        
-        const playPromise = audio.play();
-        if (playPromise && typeof playPromise.then === 'function') {
-          playPromise
-            .then(() => {
-              console.log('✅ Countdown music playing');
-            })
-            .catch((error) => {
-              console.log('❌ Countdown music autoplay blocked, click screen to enable audio');
-              // Wait for user click to enable audio
-              document.addEventListener('click', startAudioOnClick, { once: true });
-            });
-        }
-      };
-      
-      setTimeout(attemptPlayAudio, 100);
-    } else if (countdownAudioRef.current) {
-      try {
-        console.log('⏸️ Stopping countdown music');
-        countdownAudioRef.current.pause();
-        countdownAudioRef.current.currentTime = 0;
-      } catch {}
-    }
-  }, [isCountdown]);
 
   // Ensure video plays when isVideo becomes true
   useEffect(() => {
     if (isVideo) {
       console.log('🎬 Video state activated, waiting for video element...');
-      
-      // Stop countdown music before playing video
-      if (countdownAudioRef.current) {
-        try {
-          countdownAudioRef.current.pause();
-          countdownAudioRef.current.currentTime = 0;
-          console.log('⏸️ Countdown audio stopped');
-        } catch {}
-      }
       
       // Give the video element time to mount and load
       const attemptPlay = () => {
@@ -480,8 +421,6 @@ function BigScreen() {
       {/* Countdown Overlay */}
       {isCountdown && (
         <div className="fixed inset-0 bg-gradient-to-t from-orange-200/95 via-orange-00 to-white/100 backdrop-blur-sm flex items-center justify-center z-50">
-          {/* Background music during countdown - you need to add music.mp3 to public folder */}
-          <audio ref={countdownAudioRef} src="/waiting-audio.mp3" loop preload="auto" />
           <div className="text-center px-6">
             <div className="text-5xl md:text-7xl font-light text-gray-900 mb-3">Launching in</div>
             <div className="text-7xl md:text-9xl font-light text-orange-600 animate-fadeIn">{countdown}</div>
