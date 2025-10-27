@@ -150,6 +150,17 @@ function BigScreen() {
         
         console.log('🎵 Attempting to play countdown music...');
         audio.currentTime = 0;
+        
+        // Add a one-time click listener to start audio if blocked
+        const startAudioOnClick = () => {
+          audio.play()
+            .then(() => {
+              console.log('✅ Countdown music playing after user interaction');
+              document.removeEventListener('click', startAudioOnClick);
+            })
+            .catch((err) => console.log('Audio still blocked:', err));
+        };
+        
         const playPromise = audio.play();
         if (playPromise && typeof playPromise.then === 'function') {
           playPromise
@@ -157,7 +168,9 @@ function BigScreen() {
               console.log('✅ Countdown music playing');
             })
             .catch((error) => {
-              console.error('❌ Countdown music autoplay blocked:', error);
+              console.log('❌ Countdown music autoplay blocked, click screen to enable audio');
+              // Wait for user click to enable audio
+              document.addEventListener('click', startAudioOnClick, { once: true });
             });
         }
       };
@@ -176,6 +189,15 @@ function BigScreen() {
   useEffect(() => {
     if (isVideo) {
       console.log('🎬 Video state activated, waiting for video element...');
+      
+      // Stop countdown music before playing video
+      if (countdownAudioRef.current) {
+        try {
+          countdownAudioRef.current.pause();
+          countdownAudioRef.current.currentTime = 0;
+        } catch {}
+      }
+      
       // Give the video element time to mount and load
       const attemptPlay = () => {
         const video = videoRef.current;
@@ -187,21 +209,31 @@ function BigScreen() {
         
         console.log('🎬 Attempting to play video...');
         video.load(); // Ensure video is loaded
+        
+        // Try to play video
         const playPromise = video.play();
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
-              console.log('✅ Video playing successfully');
+              console.log('✅ Video playing successfully with audio');
             })
             .catch((error) => {
               console.error('❌ Video autoplay failed:', error);
-              console.log('⏭️ If video does not play, click the Skip Video button');
+              // Try playing muted as fallback
+              video.muted = true;
+              video.play()
+                .then(() => {
+                  console.log('✅ Video playing (muted due to browser policy)');
+                })
+                .catch(() => {
+                  console.log('⏭️ Video playback failed completely, click Skip Video');
+                });
             });
         }
       };
       
       // Small delay to ensure DOM is updated
-      setTimeout(attemptPlay, 100);
+      setTimeout(attemptPlay, 200);
     }
   }, [isVideo]);
 
@@ -498,36 +530,17 @@ function BigScreen() {
               <source src="/intro.mp4" type="video/mp4" />
             </video>
 
-            {/* Control buttons */}
-            <div className="mt-4 flex gap-3 justify-center">
-              <button
-                className="px-6 py-3 text-base bg-white/20 hover:bg-white/30 text-white rounded-lg transition font-light"
-                onClick={() => { 
-                  // Try to play if paused
-                  if (videoRef.current?.paused) {
-                    console.log('▶️ User clicked play');
-                    videoRef.current.play().catch((error) => {
-                      console.error('❌ Manual play failed:', error);
-                      alert('Video playback failed. Skipping to celebration.');
-                      setIsVideo(false); 
-                      setShowCelebration(true);
-                    });
-                  }
-                }}
-              >
-                ▶️ Play Video
-              </button>
-              <button
-                className="px-6 py-3 text-base bg-white/10 hover:bg-white/20 text-white rounded-lg transition font-light"
-                onClick={() => { 
-                  console.log('⏭️ User clicked skip');
-                  setIsVideo(false); 
-                  setShowCelebration(true);
-                }}
-              >
-                Skip Video
-              </button>
-            </div>
+            {/* Skip button */}
+            <button
+              className="mt-4 px-6 py-3 text-base bg-white/10 hover:bg-white/20 text-white rounded-lg transition font-light"
+              onClick={() => { 
+                console.log('⏭️ User clicked skip');
+                setIsVideo(false); 
+                setShowCelebration(true);
+              }}
+            >
+              Skip Video
+            </button>
           </div>
         </div>
       )}
