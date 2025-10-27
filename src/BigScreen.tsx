@@ -137,44 +137,71 @@ function BigScreen() {
 
   // Handle countdown background music
   useEffect(() => {
-    const audio = countdownAudioRef.current;
-    if (!audio) return;
     if (isCountdown) {
-      // Try to play; some browsers may block without user gesture
-      const playPromise = audio.play();
-      if (playPromise && typeof playPromise.then === 'function') {
-        playPromise.catch(() => {
-          // Autoplay blocked; ignore silently
-        });
-      }
-    } else {
-      try {
-        audio.pause();
+      console.log('🎵 Countdown started, attempting to play music...');
+      // Give the audio element time to mount
+      const attemptPlayAudio = () => {
+        const audio = countdownAudioRef.current;
+        if (!audio) {
+          console.log('⏳ Audio element not ready yet, retrying...');
+          setTimeout(attemptPlayAudio, 50);
+          return;
+        }
+        
+        console.log('🎵 Attempting to play countdown music...');
         audio.currentTime = 0;
+        const playPromise = audio.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise
+            .then(() => {
+              console.log('✅ Countdown music playing');
+            })
+            .catch((error) => {
+              console.error('❌ Countdown music autoplay blocked:', error);
+            });
+        }
+      };
+      
+      setTimeout(attemptPlayAudio, 100);
+    } else if (countdownAudioRef.current) {
+      try {
+        console.log('⏸️ Stopping countdown music');
+        countdownAudioRef.current.pause();
+        countdownAudioRef.current.currentTime = 0;
       } catch {}
     }
   }, [isCountdown]);
 
   // Ensure video plays when isVideo becomes true
   useEffect(() => {
-    if (isVideo && videoRef.current) {
-      console.log('🎬 Attempting to play video...');
-      const video = videoRef.current;
-      video.currentTime = 0;
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log('✅ Video playing successfully');
-          })
-          .catch((error) => {
-            console.error('❌ Video autoplay failed:', error);
-            // If autoplay fails, skip to celebration
-            console.log('⏭️ Skipping to celebration due to video playback error');
-            setIsVideo(false);
-            setShowCelebration(true);
-          });
-      }
+    if (isVideo) {
+      console.log('🎬 Video state activated, waiting for video element...');
+      // Give the video element time to mount and load
+      const attemptPlay = () => {
+        const video = videoRef.current;
+        if (!video) {
+          console.log('⏳ Video element not ready yet, retrying...');
+          setTimeout(attemptPlay, 100);
+          return;
+        }
+        
+        console.log('🎬 Attempting to play video...');
+        video.load(); // Ensure video is loaded
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('✅ Video playing successfully');
+            })
+            .catch((error) => {
+              console.error('❌ Video autoplay failed:', error);
+              console.log('⏭️ If video does not play, click the Skip Video button');
+            });
+        }
+      };
+      
+      // Small delay to ensure DOM is updated
+      setTimeout(attemptPlay, 100);
     }
   }, [isVideo]);
 
@@ -414,8 +441,8 @@ function BigScreen() {
       {/* Countdown Overlay */}
       {isCountdown && (
         <div className="fixed inset-0 bg-gradient-to-t from-orange-200/95 via-orange-00 to-white/100 backdrop-blur-sm flex items-center justify-center z-50">
-          {/* Background music during countdown */}
-          <audio ref={countdownAudioRef} src="/music.mp3" loop preload="auto" />
+          {/* Background music during countdown - you need to add music.mp3 to public folder */}
+          <audio ref={countdownAudioRef} src="/waiting-audio.mp3" loop preload="auto" />
           <div className="text-center px-6">
             <div className="text-5xl md:text-7xl font-light text-gray-900 mb-3">Launching in</div>
             <div className="text-7xl md:text-9xl font-light text-orange-600 animate-fadeIn">{countdown}</div>
@@ -434,7 +461,19 @@ function BigScreen() {
               playsInline
               preload="auto"
               controls={false}
+              onLoadedData={() => {
+                console.log('📹 Video loaded, attempting to play...');
+                if (videoRef.current) {
+                  videoRef.current.play().catch((error) => {
+                    console.error('❌ Play failed on loadeddata:', error);
+                  });
+                }
+              }}
+              onCanPlay={() => {
+                console.log('✅ Video can play');
+              }}
               onEnded={() => {
+                console.log('🎬 Video ended');
                 setIsVideo(false);
                 setShowCelebration(true);
                 // notify server that reveal is complete so users can also show logo
@@ -443,7 +482,8 @@ function BigScreen() {
                   ws?.readyState === 1 && ws.send(JSON.stringify({ type: 'reveal_now' }));
                 } catch {}
               }}
-              onError={() => {
+              onError={(e) => {
+                console.error('❌ Video error:', e);
                 setIsVideo(false);
                 setShowCelebration(true);
                 try {
@@ -458,24 +498,36 @@ function BigScreen() {
               <source src="/intro.mp4" type="video/mp4" />
             </video>
 
-            {/* Skip/Play button in case autoplay is blocked or file missing */}
-            <button
-              className="mt-4 px-6 py-3 text-base bg-white/20 hover:bg-white/30 text-white rounded-lg transition font-light"
-              onClick={() => { 
-                // Try to play if paused, otherwise skip
-                if (videoRef.current?.paused) {
-                  videoRef.current.play().catch(() => {
-                    setIsVideo(false); 
-                    setShowCelebration(true);
-                  });
-                } else {
+            {/* Control buttons */}
+            <div className="mt-4 flex gap-3 justify-center">
+              <button
+                className="px-6 py-3 text-base bg-white/20 hover:bg-white/30 text-white rounded-lg transition font-light"
+                onClick={() => { 
+                  // Try to play if paused
+                  if (videoRef.current?.paused) {
+                    console.log('▶️ User clicked play');
+                    videoRef.current.play().catch((error) => {
+                      console.error('❌ Manual play failed:', error);
+                      alert('Video playback failed. Skipping to celebration.');
+                      setIsVideo(false); 
+                      setShowCelebration(true);
+                    });
+                  }
+                }}
+              >
+                ▶️ Play Video
+              </button>
+              <button
+                className="px-6 py-3 text-base bg-white/10 hover:bg-white/20 text-white rounded-lg transition font-light"
+                onClick={() => { 
+                  console.log('⏭️ User clicked skip');
                   setIsVideo(false); 
                   setShowCelebration(true);
-                }
-              }}
-            >
-              Skip Video
-            </button>
+                }}
+              >
+                Skip Video
+              </button>
+            </div>
           </div>
         </div>
       )}
