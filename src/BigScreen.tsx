@@ -149,39 +149,32 @@ function BigScreen() {
           return;
         }
         
-        console.log('🎬 Attempting to play video with audio...');
+        console.log('🎬 Attempting to play video automatically with audio...');
         video.muted = false; // Ensure video is NOT muted
         video.volume = 1.0; // Set volume to maximum
         video.load(); // Ensure video is loaded
         
-        // Add click-to-enable for video audio if blocked
-        const enableVideoAudio = () => {
-          video.play()
-            .then(() => {
-              console.log('✅ Video playing with audio after user interaction');
-              document.removeEventListener('click', enableVideoAudio);
-            })
-            .catch((err) => console.log('Video still blocked:', err));
-        };
-        
-        // Try to play video with audio
+        // Try to play video with audio automatically
         const playPromise = video.play();
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
-              console.log('✅ Video playing successfully with audio');
+              console.log('✅ Video auto-playing successfully with audio');
             })
             .catch((error) => {
-              console.error('❌ Video autoplay with audio blocked:', error);
-              console.log('👆 Click screen to enable video audio');
-              // Wait for user click to enable video audio
-              document.addEventListener('click', enableVideoAudio, { once: true });
+              console.error('❌ Video autoplay blocked:', error);
+              console.log('Attempting to play video without sound as fallback...');
+              // Last resort: try muted playback
+              video.muted = true;
+              video.play()
+                .then(() => console.log('⚠️ Video playing muted (audio was blocked)'))
+                .catch(() => console.error('❌ Video playback completely failed'));
             });
         }
       };
       
-      // Small delay to ensure DOM is updated and countdown audio is stopped
-      setTimeout(attemptPlay, 300);
+      // Small delay to ensure DOM is updated
+      setTimeout(attemptPlay, 200);
     }
   }, [isVideo]);
 
