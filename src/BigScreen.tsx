@@ -158,6 +158,7 @@ function BigScreen() {
   useEffect(() => {
     let websocket: WebSocket | null = null;
     let retryTimeout: NodeJS.Timeout | null = null;
+    const sequenceStartedRef = { current: false };
 
     const connectWebSocket = () => {
       if (websocket && websocket.readyState === WebSocket.OPEN) {
@@ -191,23 +192,22 @@ function BigScreen() {
         setLaunchState(data);
 
         // If launch is already complete and page is reloaded, play video sequence
-        if (data.isLaunched && !sequenceStarted) {
+        if (data.isLaunched && !sequenceStartedRef.current) {
+          sequenceStartedRef.current = true;
           setSequenceStarted(true);
-          // If page is loaded and launch is already done, play video
-          if (!isCountdown && !isVideo && !showCelebration) {
-            setIsCountdown(true);
-            setCountdown(10);
-            let remaining = 10;
-            const timer = setInterval(() => {
-              remaining -= 1;
-              setCountdown(remaining);
-              if (remaining <= 0) {
-                clearInterval(timer);
-                setIsCountdown(false);
-                setIsVideo(true);
-              }
-            }, 1000);
-          }
+          // Trigger countdown and video sequence
+          setIsCountdown(true);
+          setCountdown(10);
+          let remaining = 10;
+          const timer = setInterval(() => {
+            remaining -= 1;
+            setCountdown(remaining);
+            if (remaining <= 0) {
+              clearInterval(timer);
+              setIsCountdown(false);
+              setIsVideo(true);
+            }
+          }, 1000);
         }
       };
 
@@ -240,7 +240,7 @@ function BigScreen() {
         websocket.close();
       }
     };
-  }, [isCountdown, isVideo, showCelebration, sequenceStarted]);
+  }, []); // Empty dependency array - only connect once on mount
 
   const progressPercentage = (launchState.clickCount / 20) * 100;
   const isNearLaunch = launchState.clickCount >= 18;
