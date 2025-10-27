@@ -16,7 +16,7 @@ const wss = new WebSocket.Server({
 const PORT = process.env.PORT || 10000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 WebSocket server running on port ${PORT}`);
-  console.log(`🌐 Accessible at: ws://localhost:${PORT} (local) or wss://launch-page-sonn.onrender.com (production)`);
+  console.log(`🌐 Accessible at: ws://localhost:${PORT} (local) or wss://launch-production-f6d6.up.railway.app (production)`);
 });
 
 let launchState = {

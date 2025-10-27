@@ -171,8 +171,8 @@ function BigScreen() {
 
       let wsUrl;
       if (isProduction) {
-        wsUrl = 'wss://launch-page-sonn.onrender.com';
-        console.log('Big Screen: Connecting to Render WebSocket backend');
+        wsUrl = 'wss://launch-production-f6d6.up.railway.app';
+        console.log('Big Screen: Connecting to Railway WebSocket backend');
       } else {
         wsUrl = `${wsProtocol}//${wsHost}:10000`;
       }
@@ -182,7 +182,7 @@ function BigScreen() {
 
       websocket.onopen = () => {
         connectionAttemptsRef.current = 0;
-        console.log('✅ Big Screen connected to Render WebSocket server');
+        console.log('✅ Big Screen connected to Railway WebSocket server');
         ;(window as any).__globalLaunchWS = websocket;
       };
 
@@ -212,7 +212,7 @@ function BigScreen() {
       };
 
       websocket.onclose = () => {
-        console.log('❌ Big Screen disconnected from Render WebSocket server');
+        console.log('❌ Big Screen disconnected from Railway WebSocket server');
 
         if (connectionAttemptsRef.current < 5) {
           console.log(`🔄 Big Screen retrying connection (attempt ${connectionAttemptsRef.current + 1}/5)...`);
