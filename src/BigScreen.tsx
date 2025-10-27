@@ -33,6 +33,7 @@ function BigScreen() {
   const [sequenceStarted, setSequenceStarted] = useState(false);
   const countdownAudioRef = useRef<HTMLAudioElement | null>(null);
   const waitingAudioRef = useRef<HTMLAudioElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
   const connectionAttemptsRef = useRef(0);
   // Waiting audio fallback logic
@@ -153,6 +154,29 @@ function BigScreen() {
       } catch {}
     }
   }, [isCountdown]);
+
+  // Ensure video plays when isVideo becomes true
+  useEffect(() => {
+    if (isVideo && videoRef.current) {
+      console.log('🎬 Attempting to play video...');
+      const video = videoRef.current;
+      video.currentTime = 0;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log('✅ Video playing successfully');
+          })
+          .catch((error) => {
+            console.error('❌ Video autoplay failed:', error);
+            // If autoplay fails, skip to celebration
+            console.log('⏭️ Skipping to celebration due to video playback error');
+            setIsVideo(false);
+            setShowCelebration(true);
+          });
+      }
+    }
+  }, [isVideo]);
 
   // WebSocket connection for big screen
   useEffect(() => {
@@ -404,9 +428,9 @@ function BigScreen() {
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
           <div className="w-full max-w-5xl px-4 text-center">
             <video
+              ref={videoRef}
               className="w-full h-auto max-h-[80vh] rounded-xl shadow-2xl object-contain mx-auto"
               autoPlay
-              
               playsInline
               preload="auto"
               controls={false}
@@ -434,12 +458,23 @@ function BigScreen() {
               <source src="/intro.mp4" type="video/mp4" />
             </video>
 
-            {/* Skip button in case autoplay is blocked or file missing */}
+            {/* Skip/Play button in case autoplay is blocked or file missing */}
             <button
-              className="mt-4 px-4 py-2 text-sm bg-white/10 hover:bg-white/20 text-white rounded-3xl transition"
-              onClick={() => { setIsVideo(false); setShowCelebration(true); }}
+              className="mt-4 px-6 py-3 text-base bg-white/20 hover:bg-white/30 text-white rounded-lg transition font-light"
+              onClick={() => { 
+                // Try to play if paused, otherwise skip
+                if (videoRef.current?.paused) {
+                  videoRef.current.play().catch(() => {
+                    setIsVideo(false); 
+                    setShowCelebration(true);
+                  });
+                } else {
+                  setIsVideo(false); 
+                  setShowCelebration(true);
+                }
+              }}
             >
-              X
+              Skip Video
             </button>
           </div>
         </div>
