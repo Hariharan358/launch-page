@@ -18,7 +18,7 @@ function ResetPage() {
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsHost = window.location.hostname;
       const isProduction = wsHost !== 'localhost' && wsHost !== '127.0.0.1';
-      const wsUrl = isProduction ? 'wss://launch-page-k7rh.onrender.com' : `${wsProtocol}//${wsHost}:3001`;
+      const wsUrl = isProduction ? 'wss://launch-production-f6d6.up.railway.app' : `${wsProtocol}//${wsHost}:10000`;
 
       console.log('🔌 Reset page connecting to WebSocket:', wsUrl);
       websocket = new WebSocket(wsUrl);
