@@ -38,6 +38,31 @@ function BigScreen() {
   // Waiting audio fallback logic
   const [waitingAudioBlocked, setWaitingAudioBlocked] = useState(false);
   const [waitingAudioPlaying, setWaitingAudioPlaying] = useState(false);
+  // Track if user has interacted with the page
+  const userInteractedRef = useRef(false);
+  const [showInteractionPrompt, setShowInteractionPrompt] = useState(false);
+
+  // Capture user interaction to enable audio playback
+  useEffect(() => {
+    const handleInteraction = () => {
+      if (!userInteractedRef.current) {
+        userInteractedRef.current = true;
+        setShowInteractionPrompt(false);
+        console.log('✅ User interaction detected - audio enabled');
+      }
+    };
+
+    // Listen for any user interaction
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('keydown', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+  }, []);
 
   useEffect(() => {
     const audio = waitingAudioRef.current;
@@ -149,6 +174,36 @@ function BigScreen() {
           return;
         }
         
+        // Check if user has interacted with the page
+        if (!userInteractedRef.current) {
+          console.log('⏳ Waiting for user interaction to enable audio...');
+          setShowInteractionPrompt(true); // Show prompt to user
+          
+          // Wait for interaction, then try again
+          const waitForInteraction = () => {
+            if (userInteractedRef.current) {
+              console.log('✅ User interacted, now attempting to play video');
+              setShowInteractionPrompt(false);
+              attemptPlay();
+            } else {
+              setTimeout(waitForInteraction, 100);
+            }
+          };
+          
+          // Set a timeout to give user a few seconds to interact
+          setTimeout(() => {
+            if (!userInteractedRef.current) {
+              console.log('⚠️ No user interaction yet, playing video muted as fallback');
+              setShowInteractionPrompt(false);
+              video.muted = true;
+              video.play().catch(() => console.error('❌ Video playback failed'));
+            }
+          }, 3000);
+          
+          waitForInteraction();
+          return;
+        }
+        
         console.log('🎬 Attempting to play video automatically with audio...');
         video.muted = false; // Ensure video is NOT muted
         video.volume = 1.0; // Set volume to maximum
@@ -162,8 +217,8 @@ function BigScreen() {
               console.log('✅ Video auto-playing successfully with audio');
             })
             .catch((error) => {
-              console.error('❌ Video autoplay blocked:', error);
-              console.log('Attempting to play video without sound as fallback...');
+              console.error('❌ Video autoplay with audio blocked:', error);
+              console.log('Attempting to play video muted as fallback...');
               // Last resort: try muted playback
               video.muted = true;
               video.play()
@@ -220,18 +275,18 @@ function BigScreen() {
           sequenceStartedRef.current = true;
           setSequenceStarted(true);
           // Trigger countdown and video sequence
-          setIsCountdown(true);
-          setCountdown(10);
-          let remaining = 10;
-          const timer = setInterval(() => {
-            remaining -= 1;
-            setCountdown(remaining);
-            if (remaining <= 0) {
-              clearInterval(timer);
-              setIsCountdown(false);
-              setIsVideo(true);
-            }
-          }, 1000);
+            setIsCountdown(true);
+            setCountdown(10);
+            let remaining = 10;
+            const timer = setInterval(() => {
+              remaining -= 1;
+              setCountdown(remaining);
+              if (remaining <= 0) {
+                clearInterval(timer);
+                setIsCountdown(false);
+                setIsVideo(true);
+              }
+            }, 1000);
         }
       };
 
@@ -541,6 +596,20 @@ function BigScreen() {
       >
         Close
       </button>
+    </div>
+  </div>
+)}
+
+      {/* Interaction Prompt Overlay */}
+      {showInteractionPrompt && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="text-center px-6">
+            <div className="text-4xl md:text-5xl font-light text-white mb-6 animate-pulse">
+              👆 Click or Tap Anywhere
+            </div>
+            <p className="text-xl text-white/80 font-light">
+              To enable audio playback
+            </p>
     </div>
   </div>
 )}
